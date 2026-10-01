@@ -207,14 +207,23 @@
         <div class="films-grid">
 
           <!-- Film card: NATURAL FEAR -->
-          <article class="card reveal">
+          <article class="card card--contest reveal">
             <a class="card__link" href="https://higgsfield.ai/@heytank/projects/natural-fear" target="_blank" rel="noopener">
               <div class="card__media">
                 <img src="assets/natural-fear-alien.webp" alt="Still from NATURAL FEAR, a short film by Eitan Ker" width="1133" height="638" loading="lazy">
               </div>
               <div class="card__body">
                 <h3 class="card__title">Natural Fear</h3>
-                <p class="card__line">Short film · Watch now</p>
+                <p class="card__line">Higgsfield Global Film Festival</p>
+                <!-- Contest countdown (main.js). Deadline is UTC; after it passes the text switches to "voting is open". -->
+                <div class="contest" data-contest-deadline="2026-10-05T23:59:00Z">
+                  <div class="contest__row">
+                    <time class="contest__date" datetime="2026-10-05T23:59:00Z"><span class="contest__day">Oct 05</span><span class="contest__time">11:59 PM · UTC</span></time>
+                    <span class="contest__clock" data-contest-clock hidden></span>
+                  </div>
+                  <p class="contest__status" data-contest-status>Audience Choice voting opens Oct 5</p>
+                </div>
+                <span class="card__cta">Vote on Higgsfield <span aria-hidden="true">&rarr;</span></span>
               </div>
             </a>
           </article>

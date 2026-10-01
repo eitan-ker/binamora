@@ -120,3 +120,31 @@
       });
   });
 })();
+
+// Contest countdown (Natural Fear card). Computed from UTC; refreshes every 30s.
+(function () {
+  var box = document.querySelector('[data-contest-deadline]');
+  if (!box) return;
+  var deadline = Date.parse(box.getAttribute('data-contest-deadline'));
+  if (isNaN(deadline)) return;
+  var clock = box.querySelector('[data-contest-clock]');
+  var status = box.querySelector('[data-contest-status]');
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var timer;
+  function tick() {
+    var left = deadline - Date.now();
+    if (left <= 0) {
+      status.textContent = 'Audience Choice voting is open';
+      clock.textContent = 'VOTE NOW';
+      clock.hidden = false;
+      clearInterval(timer);
+      return;
+    }
+    var mins = Math.ceil(left / 60000);
+    var d = Math.floor(mins / 1440), h = Math.floor((mins % 1440) / 60), m = mins % 60;
+    clock.textContent = d + 'D : ' + pad(h) + 'H : ' + pad(m) + 'M';
+    clock.hidden = false;
+  }
+  tick();
+  timer = setInterval(tick, 30000);
+})();
