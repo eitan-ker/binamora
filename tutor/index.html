@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Tutor — a study companion for university students | BinaMora</title>
+  <meta name="description" content="AI Tutor, a study companion for university students by Eitan Ker: upload lecture slides and get a researched, narrated audio/video lecture, then work through problem sets in a chat where a supervisor agent checks every answer. Hebrew and English.">
+  <meta name="author" content="Eitan Ker">
+  <meta name="theme-color" content="#141312">
+  <link rel="canonical" href="https://binamora.com/tutor/">
+  <link rel="icon" href="../favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BinaMora">
+  <meta property="og:title" content="AI Tutor — a study companion for university students | BinaMora">
+  <meta property="og:description" content="AI Tutor, a study companion for university students by Eitan Ker: upload lecture slides and get a researched, narrated audio/video lecture, then work through problem sets in a chat where a supervisor agent checks every answer. Hebrew and English.">
+  <meta property="og:url" content="https://binamora.com/tutor/">
+  <meta property="og:image" content="https://binamora.com/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="BinaMora logo">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AI Tutor — a study companion for university students | BinaMora">
+  <meta name="twitter:description" content="AI Tutor, a study companion for university students by Eitan Ker: upload lecture slides and get a researched, narrated audio/video lecture, then work through problem sets in a chat where a supervisor agent checks every answer. Hebrew and English.">
+  <meta name="twitter:image" content="https://binamora.com/icon-512.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://binamora.com/tutor/#app",
+        "name": "AI Tutor",
+        "url": "https://binamora.com/tutor/",
+        "applicationCategory": "EducationalApplication",
+        "description": "A study companion for university students: turns lecture slides (PDF) into a researched, narrated lecture, and helps students work through problem sets in a chat where a supervisor agent checks every answer.",
+        "inLanguage": ["en", "he"],
+        "creator": { "@id": "https://binamora.com/#eitan-ker" },
+        "publisher": { "@id": "https://binamora.com/#org" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://binamora.com/#eitan-ker",
+        "name": "Eitan Ker",
+        "url": "https://binamora.com/"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://binamora.com/#org",
+        "name": "BinaMora",
+        "url": "https://binamora.com/",
+        "logo": "https://binamora.com/icon-512.png"
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,wght@1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&text=mora&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="page-tutor">
+  <a class="skip" href="#how">Skip to how it works</a>
+
+  <header class="nav nav--solid" id="nav">
+    <a class="nav__brand" href="../" aria-label="BinaMora home"><span class="bm-logo bm-logo--nav"><span class="bm-logo__mark" aria-hidden="true" style="display:inline-flex;align-items:baseline;font-family:'Space Grotesk',sans-serif;line-height:1;font-size:calc(var(--bm)*100);color:#f3f2f2"><span style="position:relative;z-index:1;flex:none;width:calc(var(--bm)*50);height:calc(var(--bm)*114.4);margin-right:calc(var(--bm)*7)"><span style="position:absolute;left:calc(var(--bm)*-2.5);bottom:calc(var(--bm)*2.5);width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#edbb00"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #edbb00;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#d6006c"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #d6006c;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:calc(var(--bm)*2.5);bottom:calc(var(--bm)*-2.5);width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#0088b0"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #0088b0;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:calc(var(--bm)*19.5);bottom:calc(var(--bm)*51.76);font-size:calc(var(--bm)*60);font-weight:500;letter-spacing:-0.02em;line-height:1">na</span><span style="position:absolute;left:calc(var(--bm)*-4.25);bottom:calc(var(--bm)*100.9);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#edbb00;mix-blend-mode:screen"></span><span style="position:absolute;left:calc(var(--bm)*-1.75);bottom:calc(var(--bm)*98.4);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#d6006c;mix-blend-mode:screen"></span><span style="position:absolute;left:calc(var(--bm)*0.75);bottom:calc(var(--bm)*95.9);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#0088b0;mix-blend-mode:screen"></span></span><span style="position:relative;display:inline-block;flex:none;width:0;height:calc(var(--bm)*50);z-index:0"><span style="position:absolute;left:calc(var(--bm)*-36);bottom:calc(var(--bm)*-0.4);width:calc(var(--bm)*42);height:calc(var(--bm)*30);border-bottom:calc(var(--bm)*9.375) solid #f3f2f2;border-right:calc(var(--bm)*9.375) solid #f3f2f2;border-radius:0 0 calc(var(--bm)*42) 0 / 0 0 calc(var(--bm)*30) 0;box-sizing:border-box;transform:skewX(-14deg);transform-origin:bottom left"></span></span><span style="font-family:'Dancing Script', cursive;font-size:calc(var(--bm)*110);font-weight:700;line-height:1;color:#f3f2f2;margin-left:calc(var(--bm)*2);position:relative;z-index:0;letter-spacing:0">mora</span></span></span></a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#access">Early access</a>
+      <a href="../">Home</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <section class="tutor-hero">
+      <div class="container tutor-hero__inner">
+        <div class="tutor-hero__copy">
+          <p class="eyebrow reveal">Coming soon · by Eitan Ker</p>
+          <h1 class="tutor-hero__title reveal">AI Tutor</h1>
+          <p class="tutor-hero__pitch reveal">Your personal study companion: upload your lecture slides, get a researched, narrated lecture, and work through problem sets with every answer double-checked.</p>
+          <p class="tutor-hero__langs reveal" aria-label="Languages: English and Hebrew"><span>English</span><span lang="he" dir="rtl">עברית</span></p>
+          <div class="tutor-hero__actions reveal">
+            <a class="btn btn--solid" href="#access">Request early access</a>
+            <a class="btn btn--ghost" href="#how">How it works</a>
+          </div>
+        </div>
+
+        <!-- Illustration (not a product screenshot): the lecture pipeline as a stack of layers -->
+        <div class="tutor-flow reveal" aria-hidden="true">
+          <div class="tutor-flow__item"><span class="tutor-flow__tag">PDF</span>Lecture slides</div>
+          <div class="tutor-flow__item"><span class="tutor-flow__tag">1</span>Deck analysis</div>
+          <div class="tutor-flow__item"><span class="tutor-flow__tag">2</span>Web research + sources</div>
+          <div class="tutor-flow__item"><span class="tutor-flow__tag">3</span>Lecture narration</div>
+          <div class="tutor-flow__item tutor-flow__item--out"><span class="tutor-flow__tag">▶</span>Audio / video lecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="section tutor-how" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <p class="eyebrow reveal">How it works</p>
+        <h2 class="section__title reveal" id="how-title">From slide deck to lecture, in four steps.</h2>
+        <ol class="tutor-steps">
+          <li class="tutor-step reveal">
+            <span class="tutor-step__n">01</span>
+            <h3>Upload your slides</h3>
+            <p>Add a lecture deck as a PDF to a course. The text of every slide is extracted and its language is detected.</p>
+          </li>
+          <li class="tutor-step reveal">
+            <span class="tutor-step__n">02</span>
+            <h3>Claude analyzes the deck</h3>
+            <p>The whole deck is read at once to work out the topic, its scope, the key terms and the background it assumes.</p>
+          </li>
+          <li class="tutor-step reveal">
+            <span class="tutor-step__n">03</span>
+            <h3>It researches and writes</h3>
+            <p>Claude researches the topic on the web, then writes one cohesive lecture across all the slides. Every source it used is kept, so you can see what the lecture is based on.</p>
+          </li>
+          <li class="tutor-step reveal">
+            <span class="tutor-step__n">04</span>
+            <h3>Listen or watch</h3>
+            <p>Google text-to-speech voices the narration slide by slide, as an audio lecture or a video of your slides with the narration.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section class="section tutor-features" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <p class="eyebrow reveal">Features</p>
+        <h2 class="section__title reveal" id="features-title">Built for studying, not just summarizing.</h2>
+        <div class="tutor-grid">
+          <article class="tutor-card reveal">
+            <span class="tutor-card__mark" aria-hidden="true"></span>
+            <h3>Lecture generation</h3>
+            <p>A researched, narrated lecture built from your own course slides, with the web sources behind it listed next to the lecture.</p>
+          </article>
+          <article class="tutor-card reveal">
+            <span class="tutor-card__mark" aria-hidden="true"></span>
+            <h3>Supervised problem-solving chat</h3>
+            <p>Upload a problem set or exam and work through it in a chat. A main agent solves step by step; a second supervisor agent solves it again independently and compares. Every answer is marked:</p>
+            <ul class="tutor-verdicts" aria-label="Answer labels">
+              <li class="is-ok">verified by supervisor</li>
+              <li class="is-fix">corrected by supervisor</li>
+              <li class="is-warn">⚠ uncertain — verify with your course material</li>
+            </ul>
+          </article>
+          <article class="tutor-card reveal">
+            <span class="tutor-card__mark" aria-hidden="true"></span>
+            <h3>Hebrew and English</h3>
+            <p>Slides in Hebrew, English or a mix of both. Narration is voiced in the matching language, and the chat answers in the language you write in.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EARLY ACCESS ============ -->
+    <section class="section contact" id="access" aria-labelledby="access-title">
+      <div class="container contact__inner">
+        <p class="eyebrow reveal">Coming soon</p>
+        <h2 class="section__title contact__title reveal" id="access-title">Request early access</h2>
+        <p class="contact__lede reveal">AI Tutor isn’t open yet. Leave your email and we’ll let you know when it is.</p>
+
+        <!--
+          Same FormSubmit delivery as the homepage contact form (to eizzker@gmail.com).
+          main.js builds the subject from data-subject-prefix (+ " — <name>" when given).
+        -->
+        <form class="contact-form reveal" id="contact-form"
+              action="https://formsubmit.co/eizzker@gmail.com" method="POST"
+              data-ajax="https://formsubmit.co/ajax/eizzker@gmail.com"
+              data-subject-prefix="[BINAMORA] - AI Tutor access request" novalidate>
+          <input type="hidden" name="_subject" value="[BINAMORA] - AI Tutor access request">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <!-- Honeypot: humans never see or fill this -->
+          <div class="contact-form__hp" aria-hidden="true">
+            <label for="cf-honey">Leave this field empty</label>
+            <input type="text" id="cf-honey" name="_honey" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="cf-name">Name</label>
+            <input type="text" id="cf-name" name="name" autocomplete="name" maxlength="120">
+          </div>
+
+          <div class="field">
+            <label for="cf-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="cf-email" name="email" autocomplete="email" required aria-required="true" aria-describedby="cf-email-err">
+            <p class="field__error" id="cf-email-err" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="cf-message">What do you study? <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="cf-message" name="message" rows="4" required aria-required="true" aria-describedby="cf-message-err" placeholder="University, degree, the courses you’d use it for"></textarea>
+            <p class="field__error" id="cf-message-err" hidden></p>
+          </div>
+
+          <div class="field field--check">
+            <input type="checkbox" id="cf-updates" name="Updates signup" value="Yes">
+            <label for="cf-updates">Also send me updates on other BinaMora projects</label>
+          </div>
+
+          <div class="contact-form__actions">
+            <button type="submit" class="btn btn--solid contact-form__submit">Request access</button>
+            <p class="contact-form__note"><span aria-hidden="true">*</span> Required</p>
+          </div>
+
+          <p class="contact-form__status" id="cf-status" role="status" aria-live="polite" tabindex="-1" hidden></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="footer__home" href="../" aria-label="BinaMora home"><div class="footer__brand"><span class="visually-hidden">BinaMora</span><span class="bm-logo bm-logo--footer"><span class="bm-logo__mark" aria-hidden="true" style="display:inline-flex;align-items:baseline;font-family:'Space Grotesk',sans-serif;line-height:1;font-size:calc(var(--bm)*100);color:#f3f2f2"><span style="position:relative;z-index:1;flex:none;width:calc(var(--bm)*50);height:calc(var(--bm)*114.4);margin-right:calc(var(--bm)*7)"><span style="position:absolute;left:calc(var(--bm)*-2.5);bottom:calc(var(--bm)*2.5);width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#edbb00"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #edbb00;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#d6006c"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #d6006c;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:calc(var(--bm)*2.5);bottom:calc(var(--bm)*-2.5);width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#0088b0"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #0088b0;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:calc(var(--bm)*19.5);bottom:calc(var(--bm)*51.76);font-size:calc(var(--bm)*60);font-weight:500;letter-spacing:-0.02em;line-height:1">na</span><span style="position:absolute;left:calc(var(--bm)*-4.25);bottom:calc(var(--bm)*100.9);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#edbb00;mix-blend-mode:screen"></span><span style="position:absolute;left:calc(var(--bm)*-1.75);bottom:calc(var(--bm)*98.4);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#d6006c;mix-blend-mode:screen"></span><span style="position:absolute;left:calc(var(--bm)*0.75);bottom:calc(var(--bm)*95.9);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#0088b0;mix-blend-mode:screen"></span></span><span style="position:relative;display:inline-block;flex:none;width:0;height:calc(var(--bm)*50);z-index:0"><span style="position:absolute;left:calc(var(--bm)*-36);bottom:calc(var(--bm)*-0.4);width:calc(var(--bm)*42);height:calc(var(--bm)*30);border-bottom:calc(var(--bm)*9.375) solid #f3f2f2;border-right:calc(var(--bm)*9.375) solid #f3f2f2;border-radius:0 0 calc(var(--bm)*42) 0 / 0 0 calc(var(--bm)*30) 0;box-sizing:border-box;transform:skewX(-14deg);transform-origin:bottom left"></span></span><span style="font-family:'Dancing Script', cursive;font-size:calc(var(--bm)*110);font-weight:700;line-height:1;color:#f3f2f2;margin-left:calc(var(--bm)*2);position:relative;z-index:0;letter-spacing:0">mora</span></span></span></div></a>
+    <a class="footer__link" href="../">← Back to BinaMora</a>
+    <p class="footer__copy">© 2026 BinaMora</p>
+  </footer>
+
+  <script src="../main.js" defer></script>
+</body>
+</html>

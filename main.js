@@ -34,6 +34,7 @@
     honey: document.getElementById('cf-honey')
   };
   var DEFAULT_SUBJECT = '[BINAMORA] - New message from binamora.com';
+  var SUBJECT_PREFIX = form.getAttribute('data-subject-prefix'); // e.g. the AI Tutor access form
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function setError(input, msg) {
@@ -82,7 +83,9 @@
       email: email,
       message: fields.message.value.trim(),
       'Updates signup': fields.updates.checked ? 'Yes' : 'No',
-      _subject: name ? '[BINAMORA] - Message from ' + name : DEFAULT_SUBJECT,
+      _subject: SUBJECT_PREFIX
+        ? SUBJECT_PREFIX + (name ? ' — ' + name : '')
+        : (name ? '[BINAMORA] - Message from ' + name : DEFAULT_SUBJECT),
       _replyto: email,
       _template: 'table',
       _captcha: 'false',
