@@ -1,4 +1,4 @@
-// Bina Mora — small progressive enhancements (site works without JS).
+// BinaMora — small progressive enhancements (site works without JS).
 (function () {
   var nav = document.getElementById('nav');
   var onScroll = function () { nav.classList.toggle('nav--solid', window.scrollY > 40); };
