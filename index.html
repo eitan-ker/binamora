@@ -250,23 +250,28 @@
     <!-- ============ EARLIER PROJECTS ============ -->
     <section class="section projects" id="projects" aria-labelledby="projects-title">
       <div class="container">
-        <p class="eyebrow reveal">Earlier Projects</p>
-        <h2 class="section__title reveal" id="projects-title">Before the films, there was code.</h2>
+        <p class="eyebrow reveal">Software</p>
+        <h2 class="section__title reveal" id="projects-title">Earlier Projects</h2>
 
         <div class="projects-grid">
 
           <!-- Project: PARKING DETECTOR -->
           <article class="card project reveal">
             <a class="card__link" href="https://github.com/eitan-ker/Parking-Detector" target="_blank" rel="noopener">
-              <div class="card__media project__media">
-                <img src="assets/projects/parking-detector.webp" alt="Parking Detector web app: a parking lot camera feed with occupied spots boxed in red, free spots in green, and a live free-space count" width="1200" height="600" loading="lazy">
+              <div class="project__media project__media--parking">
+                <img src="assets/projects/parking-detector-feed.webp" alt="Parking Detector camera feed: occupied parking spots boxed in red by the YOLOv5 model, free spots boxed in green" width="960" height="600" loading="lazy">
               </div>
               <div class="card__body project__body">
-                <p class="project__tag">Machine Learning · 2023</p>
+                <p class="project__tag">Computer Vision · 2023</p>
                 <h3 class="card__title">Parking Detector</h3>
-                <p class="project__desc">An early machine-learning build from January 2023. A YOLOv5 model and OpenCV watch a live IP-camera feed, mark which spots are taken and which are free, and a Flask web app shows the open spaces in real time.</p>
+                <p class="project__desc">An early computer-vision project. A Python application watches a live IP-camera feed of a parking lot and reports, in real time, which spots are taken and how many are free. A pretrained YOLOv5 model detects parked cars, and a Flask web app serves the annotated stream and the free-space count, with spot data stored in MongoDB.</p>
+                <ul class="project__points">
+                  <li>Parking positions are learned, not hand-drawn: OpenCV background subtraction and an object tracker record where each car stops inside a marked area.</li>
+                  <li>Free spots are chosen by solving a maximum independent set of non-overlapping positions with dynamic programming.</li>
+                  <li>Detection and position learning run on separate threads alongside the web server.</li>
+                </ul>
                 <ul class="project__chips" aria-label="Tech stack">
-                  <li>Python</li><li>YOLOv5</li><li>OpenCV</li><li>Flask</li><li>MongoDB</li>
+                  <li>Python</li><li>YOLOv5</li><li>PyTorch</li><li>OpenCV</li><li>Flask</li><li>MongoDB</li>
                 </ul>
                 <span class="project__cta">View on GitHub <span aria-hidden="true">↗</span></span>
               </div>
@@ -276,18 +281,20 @@
           <!-- Project: TRAVEL ASSISTANT -->
           <article class="card project reveal">
             <a class="card__link" href="https://github.com/eitan-ker/travel-assistant" target="_blank" rel="noopener">
-              <div class="card__media project__media">
+              <div class="project__media project__media--travel">
                 <img src="assets/projects/travel-assistant.webp" alt="Travel Assistant chat interface showing a traveler profile, an Iceland trip answer, data-source tags and supervisor PASS badges" width="1200" height="600" loading="lazy">
               </div>
               <div class="card__body project__body">
                 <p class="project__tag">AI Engineering · 2026</p>
                 <h3 class="card__title">Travel Assistant</h3>
-                <p class="project__desc">A multi-agent travel planner built on Claude. Supervisor agents check every answer for wrong data and hallucinations, while live APIs, a 322-document RAG knowledge base, session memory and history compaction keep the context accurate and lean.</p>
-                <ol class="project__flow" aria-label="Pipeline">
-                  <li>Intent check</li><li>Agent + 10 tools</li><li>Data check</li><li>Response check</li>
-                </ol>
+                <p class="project__desc">A travel planner built on Claude as a multi-agent pipeline rather than a single prompt. A travel agent with 10 tools chooses between live APIs (OpenWeatherMap, RestCountries, OpenTripMap, Frankfurter), web search and a local knowledge base, while three supervisor agents check the request, the fetched data and the final answer.</p>
+                <ul class="project__points">
+                  <li>Supervisors return PASS, REFINE or CLARIFY; on CLARIFY the pipeline stops and asks the user (e.g. which Paris) before any tool runs.</li>
+                  <li>Context is managed explicitly: a traveler profile is extracted from every message, tool results are cached per session, and long histories are compacted into a structured summary.</li>
+                  <li>RAG over 322 WikiVoyage and Wikipedia documents embedded with Voyage AI; tool calls run in parallel.</li>
+                </ul>
                 <ul class="project__chips" aria-label="Tech stack">
-                  <li>Claude</li><li>TypeScript</li><li>Node · Express</li><li>React</li><li>RAG</li>
+                  <li>Claude API</li><li>TypeScript</li><li>Node.js</li><li>Express</li><li>React</li><li>Voyage AI</li>
                 </ul>
                 <span class="project__cta">View on GitHub <span aria-hidden="true">↗</span></span>
               </div>
