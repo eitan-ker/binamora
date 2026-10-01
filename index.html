@@ -38,6 +38,7 @@
     <nav class="nav__links" aria-label="Main">
       <a href="#film">Film</a>
       <a href="#coming-soon">Coming Soon</a>
+      <a href="#contact">Contact</a>
       <a href="https://www.youtube.com/@eitankerzhner1097" target="_blank" rel="noopener">YouTube</a>
     </nav>
   </header>
@@ -135,6 +136,62 @@
 
           <!-- ADD NEW FILM CARDS ABOVE THIS LINE -->
         </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="container contact__inner">
+        <p class="eyebrow reveal">Get in Touch</p>
+        <h2 class="section__title contact__title reveal" id="contact-title">Contact</h2>
+        <p class="contact__lede reveal">Drop us a line.</p>
+
+        <!--
+          Contact form — delivered by FormSubmit (https://formsubmit.co) to eizzker@gmail.com.
+          With JS: main.js posts JSON to the AJAX endpoint and shows an inline status message.
+          Without JS: the browser does a normal POST to the action URL below.
+        -->
+        <form class="contact-form reveal" id="contact-form"
+              action="https://formsubmit.co/eizzker@gmail.com" method="POST"
+              data-ajax="https://formsubmit.co/ajax/eizzker@gmail.com" novalidate>
+          <input type="hidden" name="_subject" value="[BINAMORA] - New message from binamora.com">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <!-- Honeypot: humans never see or fill this -->
+          <div class="contact-form__hp" aria-hidden="true">
+            <label for="cf-honey">Leave this field empty</label>
+            <input type="text" id="cf-honey" name="_honey" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="cf-name">Name</label>
+            <input type="text" id="cf-name" name="name" autocomplete="name" maxlength="120">
+          </div>
+
+          <div class="field">
+            <label for="cf-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="cf-email" name="email" autocomplete="email" required aria-required="true" aria-describedby="cf-email-err">
+            <p class="field__error" id="cf-email-err" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="cf-message">Message <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="cf-message" name="message" rows="6" required aria-required="true" aria-describedby="cf-message-err"></textarea>
+            <p class="field__error" id="cf-message-err" hidden></p>
+          </div>
+
+          <div class="field field--check">
+            <input type="checkbox" id="cf-updates" name="Updates signup" value="Yes">
+            <label for="cf-updates">Sign up for updates on new films</label>
+          </div>
+
+          <div class="contact-form__actions">
+            <button type="submit" class="btn btn--solid contact-form__submit">Send Message</button>
+            <p class="contact-form__note"><span aria-hidden="true">*</span> Required</p>
+          </div>
+
+          <p class="contact-form__status" id="cf-status" role="status" aria-live="polite" tabindex="-1" hidden></p>
+        </form>
       </div>
     </section>
   </main>

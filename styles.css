@@ -79,6 +79,41 @@ a{color:inherit}
 .card--placeholder .card__media span{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);opacity:.75}
 .card--placeholder .card__title{color:var(--muted)}
 
+/* Contact */
+.contact{text-align:center;border-top:1px solid rgba(255,255,255,.05);background:linear-gradient(var(--bg),var(--bg-2))}
+.contact__inner{max-width:640px}
+.contact__title{margin-bottom:.5rem;letter-spacing:.08em}
+.contact__lede{font-family:var(--serif);font-style:italic;font-size:clamp(1.1rem,2.2vw,1.4rem);color:var(--muted);margin:0 0 clamp(2.25rem,5vw,3.25rem)}
+.contact-form{position:relative;text-align:left;display:grid;gap:1.5rem;padding:clamp(1.5rem,4vw,2.75rem);background:rgba(17,17,20,.7);border:1px solid var(--line)}
+.contact-form::before,.contact-form::after{content:"";position:absolute;width:22px;height:22px;border:1px solid var(--gold)}
+.contact-form::before{top:-8px;left:-8px;border-right:0;border-bottom:0}
+.contact-form::after{bottom:-8px;right:-8px;border-left:0;border-top:0}
+.contact-form__hp{position:absolute!important;left:-10000px;width:1px;height:1px;overflow:hidden}
+.field{display:grid;gap:.5rem}
+.field label{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.field .req{color:var(--gold)}
+.field input[type=text],.field input[type=email],.field textarea{width:100%;font:inherit;font-size:1rem;font-weight:300;color:var(--ink);background:#0d0d10;border:1px solid rgba(255,255,255,.1);border-radius:0;padding:.85rem 1rem;transition:border-color .3s,box-shadow .3s;-webkit-appearance:none;appearance:none}
+.field textarea{resize:vertical;min-height:9rem;line-height:1.55}
+.field input:hover,.field textarea:hover{border-color:rgba(201,169,110,.35)}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.18)}
+.field input[aria-invalid=true],.field textarea[aria-invalid=true]{border-color:#c46a5e}
+.field__error{margin:0;font-size:.8rem;color:#e09486}
+.field--check{grid-template-columns:auto 1fr;align-items:center;gap:.8rem}
+.field--check label{font-family:var(--serif);font-size:1.1rem;letter-spacing:.02em;text-transform:none;color:var(--ink);cursor:pointer}
+.field--check input{-webkit-appearance:none;appearance:none;margin:0;width:20px;height:20px;border:1px solid var(--gold);background:#0d0d10;display:grid;place-items:center;cursor:pointer;transition:background .2s}
+.field--check input::after{content:"";width:5px;height:10px;border:solid #0b0b0d;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px) scale(0);transition:transform .15s}
+.field--check input:checked{background:var(--gold)}
+.field--check input:checked::after{transform:rotate(45deg) translate(-1px,-1px) scale(1)}
+.contact-form__actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin-top:.25rem}
+.contact-form__submit{cursor:pointer}
+.contact-form__submit[disabled]{opacity:.6;cursor:progress}
+.contact-form__note{margin:0;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#6f6a62}
+.contact-form__note span{color:var(--gold)}
+.contact-form__status{margin:0;padding:.9rem 1.1rem;font-size:.95rem;border:1px solid var(--line);border-left-width:3px}
+.contact-form__status:focus{outline:none}
+.contact-form__status.is-success{border-color:var(--gold);color:var(--gold-2);background:rgba(201,169,110,.07)}
+.contact-form__status.is-error{border-color:#c46a5e;color:#e9a99d;background:rgba(196,106,94,.08)}
+
 /* Footer */
 .footer{text-align:center;padding:3.5rem 1.5rem 3rem;border-top:1px solid rgba(255,255,255,.06);display:grid;gap:.9rem;justify-items:center}
 .footer__brand{font-family:var(--serif);letter-spacing:.4em;font-size:1.1rem;padding-left:.4em}
@@ -94,7 +129,9 @@ a{color:inherit}
 @keyframes cue{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 
 @media (max-width:600px){
-  .nav__links a:not(:last-child){display:none}
+  .nav__links a:nth-child(-n+2){display:none}
+  .contact-form__actions{flex-direction:column;align-items:stretch}
+  .contact-form__submit{width:100%;justify-content:center}
   .wordmark{letter-spacing:.08em;padding-left:.08em}
   .film__title{letter-spacing:.08em;padding-left:.08em}
   .film__actions .btn{width:100%;justify-content:center}
