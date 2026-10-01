@@ -101,6 +101,32 @@
         "creator": {
           "@id": "https://binamora.com/#eitan-ker"
         }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://binamora.com/#parking-detector",
+        "name": "Parking Detector",
+        "description": "Real-time parking spot detection with YOLOv5 and OpenCV on a live IP-camera feed, with a Flask web app and MongoDB storage.",
+        "codeRepository": "https://github.com/eitan-ker/Parking-Detector",
+        "programmingLanguage": "Python",
+        "dateCreated": "2023-01-13",
+        "image": "https://binamora.com/assets/projects/parking-detector.webp",
+        "author": {
+          "@id": "https://binamora.com/#eitan-ker"
+        }
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://binamora.com/#travel-assistant",
+        "name": "Travel Assistant",
+        "description": "Multi-agent travel planning assistant built on Claude, with supervisor agents, live API tools, a RAG knowledge base, session memory and history compaction.",
+        "codeRepository": "https://github.com/eitan-ker/travel-assistant",
+        "programmingLanguage": "TypeScript",
+        "dateCreated": "2026-05-31",
+        "image": "https://binamora.com/assets/projects/travel-assistant.webp",
+        "author": {
+          "@id": "https://binamora.com/#eitan-ker"
+        }
       }
     ]
   }
@@ -122,6 +148,7 @@
     <nav class="nav__links" aria-label="Main">
       <a href="#film">Film</a>
       <a href="#coming-soon">Coming Soon</a>
+      <a href="#projects">Projects</a>
       <a href="tutor/">AI Tutor</a>
       <a href="#contact">Contact</a>
       <a href="https://www.youtube.com/@eitankerzhner1097" target="_blank" rel="noopener">YouTube</a>
@@ -224,6 +251,57 @@
           </article>
 
           <!-- ADD NEW FILM CARDS ABOVE THIS LINE -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EARLIER PROJECTS ============ -->
+    <section class="section projects" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <p class="eyebrow reveal">Earlier Projects</p>
+        <h2 class="section__title reveal" id="projects-title">Before the films, there was code.</h2>
+
+        <div class="projects-grid">
+
+          <!-- Project: PARKING DETECTOR -->
+          <article class="card project reveal">
+            <a class="card__link" href="https://github.com/eitan-ker/Parking-Detector" target="_blank" rel="noopener">
+              <div class="card__media project__media">
+                <img src="assets/projects/parking-detector.webp" alt="Parking Detector web app: a parking lot camera feed with occupied spots boxed in red, free spots in green, and a live free-space count" width="1200" height="600" loading="lazy">
+              </div>
+              <div class="card__body project__body">
+                <p class="project__tag">Machine Learning · 2023</p>
+                <h3 class="card__title">Parking Detector</h3>
+                <p class="project__desc">An early machine-learning build from January 2023. A YOLOv5 model and OpenCV watch a live IP-camera feed, mark which spots are taken and which are free, and a Flask web app shows the open spaces in real time.</p>
+                <ul class="project__chips" aria-label="Tech stack">
+                  <li>Python</li><li>YOLOv5</li><li>OpenCV</li><li>Flask</li><li>MongoDB</li>
+                </ul>
+                <span class="project__cta">View on GitHub <span aria-hidden="true">↗</span></span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Project: TRAVEL ASSISTANT -->
+          <article class="card project reveal">
+            <a class="card__link" href="https://github.com/eitan-ker/travel-assistant" target="_blank" rel="noopener">
+              <div class="card__media project__media">
+                <img src="assets/projects/travel-assistant.webp" alt="Travel Assistant chat interface showing a traveler profile, an Iceland trip answer, data-source tags and supervisor PASS badges" width="1200" height="600" loading="lazy">
+              </div>
+              <div class="card__body project__body">
+                <p class="project__tag">AI Engineering · 2026</p>
+                <h3 class="card__title">Travel Assistant</h3>
+                <p class="project__desc">A multi-agent travel planner built on Claude. Supervisor agents check every answer for wrong data and hallucinations, while live APIs, a 322-document RAG knowledge base, session memory and history compaction keep the context accurate and lean.</p>
+                <ol class="project__flow" aria-label="Pipeline">
+                  <li>Intent check</li><li>Agent + 10 tools</li><li>Data check</li><li>Response check</li>
+                </ol>
+                <ul class="project__chips" aria-label="Tech stack">
+                  <li>Claude</li><li>TypeScript</li><li>Node · Express</li><li>React</li><li>RAG</li>
+                </ul>
+                <span class="project__cta">View on GitHub <span aria-hidden="true">↗</span></span>
+              </div>
+            </a>
+          </article>
+
         </div>
       </div>
     </section>
