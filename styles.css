@@ -71,6 +71,12 @@ a{color:inherit}
 .video__frame{position:relative;aspect-ratio:16/9;width:100%;background:#000 url("https://i.ytimg.com/vi/sox4ZaUPzsg/maxresdefault.jpg") center/cover}
 @supports not (aspect-ratio:16/9){.video__frame{height:0;padding-top:56.25%}}
 .video__frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video__poster{display:block;overflow:hidden}
+.video__poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s,filter .4s;filter:brightness(.85)}
+.video__poster:hover img{transform:scale(1.03);filter:none}
+.video__play{position:absolute;left:50%;top:50%;width:clamp(64px,8vw,92px);height:clamp(64px,8vw,92px);transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:rgba(20,19,18,.55);border:1px solid var(--accent);transition:transform .3s,background .3s}
+.video__play svg{width:42%;height:42%;fill:var(--accent);margin-left:8%}
+.video__poster:hover .video__play{transform:translate(-50%,-50%) scale(1.08);background:rgba(98,197,238,.18)}
 .film__actions{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:clamp(2rem,4vw,3rem)}
 
 /* Coming soon / films grid */
