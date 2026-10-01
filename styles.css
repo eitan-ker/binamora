@@ -114,6 +114,14 @@ a{color:inherit}
 .contest__status::before{content:"";position:absolute;left:.48rem;top:.45rem;bottom:.45rem;width:3px;border-radius:2px;background:linear-gradient(#f3e3b0,#b99a4e)}
 .card__cta{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-2);transition:color .3s}
 .card:hover .card__cta{color:var(--accent)}
+/* Equal-height film cards: CTAs/footers share one bottom line */
+.films-grid .card{display:flex;flex-direction:column}
+.films-grid .card__link{flex:1;display:flex;flex-direction:column}
+.films-grid .card__body{flex:1;display:flex;flex-direction:column;align-items:flex-start}
+.films-grid .contest{align-self:stretch}
+.card__desc{margin:.9rem 0 1.1rem;color:var(--muted);font-size:.92rem;line-height:1.6}
+.films-grid .card__cta,.card__foot{margin-top:auto}
+.card__foot{margin-bottom:0;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);opacity:.7}
 
 /* Earlier projects */
 .projects{text-align:center;border-top:1px solid rgba(255,255,255,.05);background:linear-gradient(var(--bg-2),var(--bg))}
