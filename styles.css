@@ -48,6 +48,7 @@ a{color:inherit}
 .scroll-cue span{position:absolute;left:50%;top:7px;width:2px;height:7px;margin-left:-1px;background:var(--accent);border-radius:2px;animation:cue 2s infinite}
 
 .eyebrow{font-size:.72rem;letter-spacing:.38em;text-transform:uppercase;color:var(--accent);margin:0 0 1rem;font-weight:400}
+.hero__tagline{font-size:clamp(.72rem,1.2vw,.84rem);margin:1.6rem 0 0;padding-left:.38em;text-align:center;opacity:.92}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.95rem 1.8rem;font-family:var(--sans);font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent);transition:background .3s,color .3s,border-color .3s,transform .3s}
