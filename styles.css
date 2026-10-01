@@ -37,7 +37,7 @@ a{color:inherit}
 
 /* Hero */
 .hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;padding:6rem 1.5rem}
-.hero__bg{position:absolute;inset:-40px;background:url("https://i.ytimg.com/vi/sox4ZaUPzsg/maxresdefault.jpg") center/cover no-repeat,#1b1a19;filter:blur(14px) brightness(.42) saturate(.8);transform:scale(1.08);animation:drift 30s ease-in-out infinite alternate}
+.hero__bg{position:absolute;inset:-40px;background:url("assets/natural-fear-alien.webp") center/cover no-repeat,#1b1a19;filter:blur(14px) brightness(.42) saturate(.8);transform:scale(1.08);animation:drift 30s ease-in-out infinite alternate}
 .hero__vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,19,18,.15) 0%,rgba(20,19,18,.7) 65%,var(--bg) 100%),linear-gradient(to bottom,rgba(20,19,18,.5),transparent 30%,transparent 70%,var(--bg))}
 .grain{position:absolute;inset:0;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .hero__content{position:relative;z-index:2}
