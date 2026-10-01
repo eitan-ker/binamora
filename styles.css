@@ -89,6 +89,9 @@ a{color:inherit}
 .card--placeholder .card__media{background:repeating-linear-gradient(135deg,#171615 0 14px,#1b1a19 14px 28px);border-bottom:1px dashed rgba(98,197,238,.18)}
 .card--placeholder .card__media span{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);opacity:.75}
 .card--placeholder .card__title{color:var(--muted)}
+.card--stealth .card__media{align-content:center;gap:.9rem}
+.card__stealth{width:46%;max-width:170px;fill:#0b0b0a;stroke:rgba(98,197,238,.55);stroke-width:1.2;stroke-linejoin:round;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));transition:transform .8s}
+.card--stealth:hover .card__stealth{transform:translateY(-4px)}
 .card--project .card__media{background:radial-gradient(120% 90% at 30% 20%,rgba(98,197,238,.22),transparent 60%),#121110;align-content:center;gap:.6rem;border-bottom:1px solid rgba(98,197,238,.25)}
 .card--project .card__mark{font-family:var(--display);font-size:clamp(1.6rem,3vw,2.1rem);font-weight:600;letter-spacing:.04em;color:var(--accent);transition:transform .6s}
 .card--project .card__tag{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
