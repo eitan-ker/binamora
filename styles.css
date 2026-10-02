@@ -251,3 +251,41 @@ a{color:inherit}
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .js .reveal{opacity:1;transform:none}
 }
+
+/* ============ Language switch (EN / עברית) ============ */
+.lang-switch{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}
+.lang-switch:hover{color:var(--accent-2)}
+.lang-switch__globe{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.4;flex:none}
+
+/* ============ Hebrew lockup (original mark + בינה-מורה) ============
+   The original BinaMora mark is kept untouched; בינה-מורה is set beside it
+   in the same CMY treatment as the logo circles (yellow/magenta/cyan screen
+   layers behind a paper-white face), in Rubik to echo Space Grotesk. */
+.bm-lockup{display:inline-flex;align-items:center;gap:calc(var(--bm,.3px)*26);direction:ltr}
+.bm-lockup--nav{--bm:.3px}
+.bm-lockup--hero{--bm:clamp(1.1px,.3vw,2px)}
+.bm-lockup--footer{--bm:.42px}
+.bm-he{position:relative;display:inline-block;isolation:isolate;line-height:1;font-family:"Rubik","Space Grotesk",system-ui,sans-serif;font-weight:600;letter-spacing:-.01em;font-size:calc(var(--bm,.3px)*64)}
+.bm-he>span{display:block;white-space:nowrap}
+.bm-he__w{position:relative;z-index:1;color:#f3f2f2}
+.bm-he__y,.bm-he__m,.bm-he__c{position:absolute;top:0;right:0;z-index:0;mix-blend-mode:screen}
+.bm-he__y{color:var(--c-yellow);transform:translate(.06em,.06em)}
+.bm-he__m{color:var(--c-magenta);transform:translate(.02em,-.015em)}
+.bm-he__c{color:var(--c-cyan);transform:translate(-.06em,-.06em)}
+.bm-lockup--hero .bm-he{filter:drop-shadow(0 10px 40px rgba(0,0,0,.55))}
+
+/* ============ RTL / Hebrew pages ============ */
+html[dir="rtl"]{--sans:"Space Grotesk","Heebo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--display:"Space Grotesk","Heebo",system-ui,sans-serif;--serif:"Frank Ruhl Libre","Source Serif 4",Georgia,serif}
+/* Latin-heavy spacing reads badly on Hebrew — relax it for RTL UI text */
+html[dir="rtl"] .eyebrow,html[dir="rtl"] .nav__links a,html[dir="rtl"] .btn,html[dir="rtl"] .card__line,html[dir="rtl"] .card__title,html[dir="rtl"] .card__cta,html[dir="rtl"] .project__tag,html[dir="rtl"] .project__cta,html[dir="rtl"] .field label,html[dir="rtl"] .contest__day,html[dir="rtl"] .footer__link,html[dir="rtl"] .footer__copy,html[dir="rtl"] .card__foot{letter-spacing:.02em;text-transform:none}
+html[dir="rtl"] .film__title{letter-spacing:.04em;padding-left:0}
+/* Flip the handful of physical-direction rules */
+html[dir="rtl"] .films-grid,html[dir="rtl"] .contact-form,html[dir="rtl"] .projects-grid{text-align:right}
+html[dir="rtl"] .project__points li{padding-left:0;padding-right:1.1rem}
+html[dir="rtl"] .project__points li::before{left:auto;right:0}
+html[dir="rtl"] .tutor-verdicts li{border-left:0;border-right:3px solid}
+html[dir="rtl"] .contact-form__status{border-left-width:1px;border-right-width:3px}
+html[dir="rtl"] .tutor-step{border-image-slice:1;border-image-source:linear-gradient(270deg,var(--c-yellow),var(--c-magenta),var(--c-cyan))}
+html[dir="rtl"] .skip{left:auto;right:-999px}
+html[dir="rtl"] .skip:focus{right:1rem;left:auto}
+html[dir="rtl"] .hero__tagline{padding-left:0;padding-right:.38em}

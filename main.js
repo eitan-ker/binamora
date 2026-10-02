@@ -1,4 +1,26 @@
 // BinaMora — small progressive enhancements (site works without JS).
+// UI strings follow the page language (<html lang>), so Hebrew pages stay Hebrew.
+var BM_HE = document.documentElement.lang === 'he';
+var BM_T = BM_HE ? {
+  emailRequired: 'נא להזין כתובת אימייל.',
+  emailInvalid: 'נא להזין כתובת אימייל תקינה.',
+  messageRequired: 'נא למלא שדה זה.',
+  sending: 'שולח…',
+  success: 'תודה — ההודעה נשלחה. נחזור אליכם בקרוב.',
+  error: 'מצטערים, משהו השתבש וההודעה לא נשלחה. נסו שוב בעוד רגע.',
+  voteOpen: 'הצבעת בחירת הקהל פתוחה',
+  voteNow: 'הצביעו עכשיו'
+} : {
+  emailRequired: 'Please enter your email address.',
+  emailInvalid: 'Please enter a valid email address.',
+  messageRequired: 'Please write a message.',
+  sending: 'Sending…',
+  success: 'Thank you — your message has been sent. We’ll be in touch soon.',
+  error: 'Sorry, something went wrong and your message wasn’t sent. Please try again in a moment.',
+  voteOpen: 'Audience Choice voting is open',
+  voteNow: 'VOTE NOW'
+};
+
 (function () {
   var nav = document.getElementById('nav');
   var onScroll = function () { nav.classList.toggle('nav--solid', window.scrollY > 40); };
@@ -58,10 +80,10 @@
     var firstBad = null;
     var email = fields.email.value.trim();
     var message = fields.message.value.trim();
-    if (!email) { setError(fields.email, 'Please enter your email address.'); firstBad = firstBad || fields.email; }
-    else if (!EMAIL_RE.test(email)) { setError(fields.email, 'Please enter a valid email address.'); firstBad = firstBad || fields.email; }
+    if (!email) { setError(fields.email, BM_T.emailRequired); firstBad = firstBad || fields.email; }
+    else if (!EMAIL_RE.test(email)) { setError(fields.email, BM_T.emailInvalid); firstBad = firstBad || fields.email; }
     else setError(fields.email, '');
-    if (!message) { setError(fields.message, 'Please write a message.'); firstBad = firstBad || fields.message; }
+    if (!message) { setError(fields.message, BM_T.messageRequired); firstBad = firstBad || fields.message; }
     else setError(fields.message, '');
     if (firstBad) firstBad.focus();
     return !firstBad;
@@ -94,7 +116,7 @@
 
     button.disabled = true;
     var label = button.textContent;
-    button.textContent = 'Sending…';
+    button.textContent = BM_T.sending;
 
     fetch(form.getAttribute('data-ajax'), {
       method: 'POST',
@@ -108,10 +130,10 @@
       })
       .then(function () {
         form.reset();
-        showStatus('success', 'Thank you — your message has been sent. We’ll be in touch soon.');
+        showStatus('success', BM_T.success);
       })
       .catch(function () {
-        showStatus('error', 'Sorry, something went wrong and your message wasn’t sent. Please try again in a moment.');
+        showStatus('error', BM_T.error);
       })
       .then(function () {
         button.disabled = false;
@@ -134,8 +156,8 @@
   function tick() {
     var left = deadline - Date.now();
     if (left <= 0) {
-      status.textContent = 'Audience Choice voting is open';
-      clock.textContent = 'VOTE NOW';
+      status.textContent = BM_T.voteOpen;
+      clock.textContent = BM_T.voteNow;
       clock.hidden = false;
       clearInterval(timer);
       return;

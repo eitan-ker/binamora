@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://binamora.com/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://binamora.com/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://binamora.com/he/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://binamora.com/"/>
+  </url>
+  <url>
+    <loc>https://binamora.com/he/</loc>
+    <lastmod>2026-10-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://binamora.com/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://binamora.com/he/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://binamora.com/"/>
   </url>
   <url>
     <loc>https://binamora.com/tutor/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://binamora.com/tutor/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://binamora.com/he/tutor/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://binamora.com/tutor/"/>
+  </url>
+  <url>
+    <loc>https://binamora.com/he/tutor/</loc>
+    <lastmod>2026-10-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://binamora.com/tutor/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://binamora.com/he/tutor/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://binamora.com/tutor/"/>
   </url>
 </urlset>
