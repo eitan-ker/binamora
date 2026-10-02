@@ -266,7 +266,7 @@ a{color:inherit}
 .bm-lockup--hero{--bm:clamp(1.1px,.3vw,2px)}
 .bm-lockup--footer{--bm:.42px}
 .bm-he{position:relative;display:inline-block;isolation:isolate;line-height:1;font-family:"Rubik","Space Grotesk",system-ui,sans-serif;font-weight:600;letter-spacing:-.01em;font-size:calc(var(--bm,.3px)*64)}
-.bm-he>span{display:block;white-space:nowrap}
+.bm-he>span{display:block;white-space:nowrap;text-align:right}
 .bm-he__w{position:relative;z-index:1;color:#f3f2f2}
 .bm-he__y,.bm-he__m,.bm-he__c{position:absolute;top:0;right:0;z-index:0;mix-blend-mode:screen}
 .bm-he__y{color:var(--c-yellow);transform:translate(.06em,.06em)}
@@ -294,16 +294,35 @@ html[dir="rtl"] .hero__tagline{padding-left:0;padding-right:.38em}
    Off-screen helpers must sit on the non-scrollable side in RTL (the right),
    otherwise left:-10000px adds ~10k px of horizontal scroll. */
 html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
-/* Hero lockup (mark + בינה-מורה) is ~590×--bm wide: scale it to the viewport,
+/* Hero lockup (mark + בינה-מורה) is ~430×--bm wide: scale it to the viewport,
    and stack it on phones so both parts stay large and nothing is clipped. */
-.bm-lockup--hero{--bm:clamp(.9px,calc((100vw - 3rem - 24px) / 590),2px)}
+.bm-lockup--hero{--bm:clamp(.9px,calc((100vw - 3rem - 24px) / 440),2px)}
 .bm-lockup--hero .bm-logo{--bm:inherit}
 @media (max-width:600px){
   .bm-lockup--hero{flex-direction:column;gap:calc(var(--bm)*20);--bm:min(clamp(1.1px,.3vw,2px),calc((100vw - 3rem - 16px) / 300))}
 }
-/* Narrow phones: brand + 3 links + language switch don't fit the fixed nav */
-@media (max-width:440px){
-  .nav{padding-inline:1rem}
-  .nav__links{gap:.5rem}
+/* Nav items never wrap; Hebrew-script label (עברית) gets no Latin tracking */
+.nav__links a{white-space:nowrap}
+.nav{gap:1.25rem}
+.lang-switch:lang(he){letter-spacing:normal}
+/* Small tablets: the full six-item menu is tight next to the logo */
+@media (min-width:601px) and (max-width:720px){
+  .nav__links{gap:1rem}
   .lang-switch__globe{display:none}
+}
+/* Narrow phones: brand + links + language switch must fit the fixed nav */
+@media (max-width:440px){
+  .nav{padding-inline:1rem;gap:1rem}
+  .nav__links{gap:.85rem}
+  .nav__links a{font-size:.68rem;letter-spacing:.14em}
+  html[dir="rtl"] .nav__links a{letter-spacing:normal}
+  .lang-switch__globe{display:none}
+}
+@media (max-width:374px){
+  .nav__links{gap:.7rem}
+  .nav__links a{font-size:.66rem;letter-spacing:.06em}
+  .nav .bm-lockup--nav .bm-he{display:none}
+}
+@media (max-width:339px){
+  .nav__links a[href="#projects"]{display:none}
 }
