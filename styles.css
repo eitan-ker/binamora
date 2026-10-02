@@ -289,3 +289,21 @@ html[dir="rtl"] .tutor-step{border-image-slice:1;border-image-source:linear-grad
 html[dir="rtl"] .skip{left:auto;right:-999px}
 html[dir="rtl"] .skip:focus{right:1rem;left:auto}
 html[dir="rtl"] .hero__tagline{padding-left:0;padding-right:.38em}
+
+/* ============ RTL overflow fixes ============
+   Off-screen helpers must sit on the non-scrollable side in RTL (the right),
+   otherwise left:-10000px adds ~10k px of horizontal scroll. */
+html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
+/* Hero lockup (mark + בינה-מורה) is ~590×--bm wide: scale it to the viewport,
+   and stack it on phones so both parts stay large and nothing is clipped. */
+.bm-lockup--hero{--bm:clamp(.9px,calc((100vw - 3rem - 24px) / 590),2px)}
+.bm-lockup--hero .bm-logo{--bm:inherit}
+@media (max-width:600px){
+  .bm-lockup--hero{flex-direction:column;gap:calc(var(--bm)*20);--bm:min(clamp(1.1px,.3vw,2px),calc((100vw - 3rem - 16px) / 300))}
+}
+/* Narrow phones: brand + 3 links + language switch don't fit the fixed nav */
+@media (max-width:440px){
+  .nav{padding-inline:1rem}
+  .nav__links{gap:.5rem}
+  .lang-switch__globe{display:none}
+}
