@@ -103,6 +103,10 @@ a{color:inherit}
 .card--project .card__mark{font-family:var(--display);font-size:clamp(1.6rem,3vw,2.1rem);font-weight:600;letter-spacing:.04em;color:var(--accent);transition:transform .6s}
 .card--project .card__tag{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
 .card--project:hover .card__mark{transform:scale(1.06)}
+/* AI Tutor card: robot icon before the title (row direction follows dir, so in RTL it sits to the right of the text) */
+.card__mark--icon,.card__title--icon{display:inline-flex;align-items:center;gap:.35em;white-space:nowrap}
+.card__title--icon{display:flex}
+.card__icon,.card .card__media img.card__icon,.card:hover .card__media img.card__icon{flex:none;display:block;height:1.05em;width:auto;aspect-ratio:3/4;object-fit:contain;filter:none;transform:none;transition:none}
 /* Natural Fear contest countdown */
 .contest{margin:1rem 0 1.1rem;padding:.85rem clamp(.7rem,2.5vw,.9rem);background:#100f0e;border:1px solid rgba(255,255,255,.07);border-radius:12px}
 .contest__row{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
