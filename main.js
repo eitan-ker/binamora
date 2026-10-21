@@ -286,14 +286,11 @@ var BM_T = BM_HE ? {
   var base = (document.currentScript && document.currentScript.src) ||
     (document.querySelector('script[src$="main.js"]') || {}).src || '';
   base = base.replace(/main\.js.*$/, '');
-  var ROBOT = '<img src="' + base + 'assets/icons/ai-tutor-bot.svg" alt="">';
-  var DEVIL = '<svg viewBox="0 0 64 80" aria-hidden="true"><path d="M17 22 C10 14 9 6 12 1 C15 9 20 13 25 15Z M47 22 C54 14 55 6 52 1 C49 9 44 13 39 15Z" fill="#ffb347" stroke="#c45a00" stroke-width="1.2"/>' +
-    '<rect x="12" y="12" width="40" height="40" rx="18" fill="#d6283f" stroke="#7d0f22" stroke-width="1.5"/>' +
-    '<path d="M20 28 L29 31 M44 28 L35 31" stroke="#2a0a10" stroke-width="2.4" stroke-linecap="round"/>' +
-    '<ellipse cx="25.5" cy="34" rx="2.4" ry="2.8" fill="#ffe36b"/><ellipse cx="38.5" cy="34" rx="2.4" ry="2.8" fill="#ffe36b"/>' +
-    '<path d="M23 42 Q32 49 41 42" stroke="#2a0a10" stroke-width="2.2" fill="#5a0715" stroke-linecap="round"/>' +
-    '<path d="M27 43.5 l1.5 3 1.5-2.6 M35 43.5 l-1.5 3-1.5-2.6" fill="#fff"/>' +
-    '<path d="M32 52 C32 62 46 64 50 74 L54 68 L56 77 L48 75" stroke="#7d0f22" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var A = base + 'assets/cursor/';
+  var ART = { robot: { idle: A + 'robot-idle.webp', aim: A + 'robot-aim.webp', mx: .97, my: .30 },
+              devil: { idle: A + 'devil-idle.webp', aim: A + 'devil-aim.webp', mx: .94, my: .17 } };
+  [ART.robot.aim, ART.devil.aim, ART.robot.idle, ART.devil.idle].forEach(function (u) { new Image().src = u; });
+  var ROBOT = '<img src="' + ART.robot.idle + '" alt="">', DEVIL = '<img src="' + ART.devil.idle + '" alt="">';
   var L = html.lang === 'he' ? { label: 'סמן', robot: 'רובוט', devil: 'שד', none: 'ללא' } : { label: 'Cursor', robot: 'Robot', devil: 'Devil', none: 'Off' };
   var mode = localStorage.getItem(KEY) || 'none';
 
@@ -318,7 +315,7 @@ var BM_T = BM_HE ? {
   function set(m) {
     mode = m; localStorage.setItem(KEY, m);
     html.classList.toggle('cfx-on', m !== 'none');
-    sprite.innerHTML = m === 'robot' ? ROBOT : m === 'devil' ? DEVIL : '';
+    sprite.innerHTML = ART[m] ? '<img src="' + ART[m].idle + '" alt="">' : '';
     sprite.dataset.mode = m;
     [].forEach.call(sw.children, function (b) { b.setAttribute('aria-checked', b.dataset.mode === m); });
   }
@@ -334,9 +331,11 @@ var BM_T = BM_HE ? {
   // Shots
   function shoot(target) {
     var r = target.getBoundingClientRect();
-    var tx = Math.min(Math.max(x, r.left + 12), r.right - 12), ty = Math.min(Math.max(y + 40, r.top + 12), r.bottom - 12);
-    if (Math.hypot(tx - x, ty - y) < 30) { tx = r.left + r.width / 2; ty = r.top + r.height / 2; }
-    var sx = x + 22, sy = y + 14; // from the character's mouth/eyes
+    var tx = r.left + r.width / 2, ty = r.top + Math.min(r.height / 2, 140);
+    var img = sprite.firstChild, art = ART[mode], left = tx < x;
+    img.src = art.aim; sprite.classList.add('cfx-aim'); sprite.classList.toggle('cfx-left', left);
+    var ir = img.getBoundingClientRect(), w = ir.height * (img.naturalWidth / img.naturalHeight || .7);
+    var ox = (left ? ir.right - w * art.mx : ir.left + w * art.mx), sy = ir.top + ir.height * art.my, sx = ox;
     var fx = document.createElement('div'); fx.className = 'cfx-fx'; document.body.appendChild(fx);
     var dx = tx - sx, dy = ty - sy, len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
     if (mode === 'robot') {
@@ -346,7 +345,7 @@ var BM_T = BM_HE ? {
     } else {
       for (var i = 0; i < 16; i++) {
         var p = document.createElement('i'); p.className = 'cfx-flame';
-        var j = (Math.random() - .5) * 0.5, k = 0.85 + Math.random() * 0.3, d = i * 9;
+        var j = (Math.random() - .5) * 0.5, k = 0.85 + Math.random() * 0.3, d = 90 + i * 9;
         p.style.cssText = 'left:' + sx + 'px;top:' + sy + 'px';
         p.animate([{ transform: 'translate(-50%,-50%) scale(.3)', opacity: 1 },
           { transform: 'translate(calc(-50% + ' + (dx * k + dy * j) + 'px),calc(-50% + ' + (dy * k - dx * j) + 'px)) scale(' + (1.4 + Math.random()) + ')', opacity: 0 }],
@@ -359,12 +358,12 @@ var BM_T = BM_HE ? {
     sprite.classList.add('cfx-recoil');
     target.classList.remove('cfx-blasted', 'cfx-burnt'); void target.offsetWidth;
     target.classList.add(mode === 'robot' ? 'cfx-blasted' : 'cfx-burnt');
-    setTimeout(function () { fx.remove(); sprite.classList.remove('cfx-recoil'); }, 520);
+    setTimeout(function () { fx.remove(); sprite.classList.remove('cfx-recoil', 'cfx-aim', 'cfx-left'); if (ART[mode]) img.src = ART[mode].idle; }, 560);
     setTimeout(function () { target.classList.remove('cfx-blasted', 'cfx-burnt'); }, 900);
   }
 
   // Intercept before the dolly handler (capture phase), play the shot, then replay the click.
-  var replaying = false, FX_MS = 360;
+  var replaying = false, FX_MS = 430;
   document.addEventListener('click', function (e) {
     if (replaying || mode === 'none' || still) return;
     if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

@@ -346,26 +346,31 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
   .cfx-switch__opt:hover{color:var(--ink)}
   .cfx-switch__opt[aria-checked="true"]{background:rgba(237,187,0,.14);color:var(--c-yellow);box-shadow:inset 0 0 0 1px rgba(237,187,0,.35)}
   .cfx-switch__opt:focus-visible{outline:2px solid var(--hot);outline-offset:1px}
-  .cfx-switch__ico{display:inline-flex;width:14px;height:16px;align-items:center;justify-content:center}
-  .cfx-switch__ico img,.cfx-switch__ico svg{width:100%;height:100%;fill:currentColor}
+  .cfx-switch__ico{display:inline-flex;width:16px;height:18px;align-items:center;justify-content:center}
+  .cfx-switch__ico img{height:100%;width:auto;max-width:none}.cfx-switch__ico svg{width:100%;height:100%;fill:currentColor}
   .cfx-switch__opt:not([aria-checked="true"]) .cfx-switch__ico{filter:grayscale(.6) opacity(.75)}
   html.cfx-on,html.cfx-on *{cursor:none!important}
   html.cfx-on input,html.cfx-on textarea,html.cfx-on select,html.cfx-on [contenteditable="true"]{cursor:auto!important}
   html.cfx-on .cfx-sprite{display:block}
-  .cfx-sprite{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;width:30px;height:38px;margin:-2px 0 0 -4px;will-change:transform;transition:opacity .15s}
-  .cfx-sprite>*{width:100%;height:100%;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));transform-origin:30% 10%;transition:transform .12s}
+  .cfx-sprite{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;height:68px;will-change:transform;transition:opacity .15s}
+  .cfx-sprite::before{content:"";position:absolute;left:-2px;top:-2px;width:4px;height:4px;border-radius:50%;background:var(--c-yellow);box-shadow:0 0 6px var(--c-yellow)}
+  .cfx-sprite>img{position:absolute;left:6px;top:4px;height:100%;width:auto;max-width:none;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));transform-origin:50% 90%;transition:transform .09s ease-out}
   .cfx-sprite.cfx-hide{opacity:0}
-  .cfx-sprite.cfx-recoil>*{transform:scale(1.15) rotate(-8deg)}
+  .cfx-sprite.cfx-left>img{transform:scaleX(-1)}
+  .cfx-sprite.cfx-recoil>img{animation:cfx-kick .3s .09s ease-out}
+  .cfx-sprite.cfx-left.cfx-recoil>img{animation-name:cfx-kick-l}
+  @keyframes cfx-kick{30%{transform:translateX(-3px) rotate(-4deg)}}
+  @keyframes cfx-kick-l{0%,100%{transform:scaleX(-1)}30%{transform:scaleX(-1) translateX(-3px) rotate(-4deg)}}
   .cfx-fx{display:block;position:fixed;inset:0;z-index:9998;pointer-events:none}
-  .cfx-beam{position:absolute;height:3px;margin-top:-1.5px;transform-origin:0 50%;border-radius:3px;background:linear-gradient(90deg,#d9ffe8,#39ff88 30%,#00e05a);box-shadow:0 0 6px #39ff88,0 0 16px #00ff66,0 0 30px rgba(0,255,102,.6);animation:cfx-beam .3s ease-out forwards}
+  .cfx-beam{position:absolute;height:3px;margin-top:-1.5px;transform-origin:0 50%;border-radius:3px;background:linear-gradient(90deg,#d9ffe8,#39ff88 30%,#00e05a);box-shadow:0 0 6px #39ff88,0 0 16px #00ff66,0 0 30px rgba(0,255,102,.6);animation:cfx-beam .3s .09s ease-out both}
   @keyframes cfx-beam{0%{clip-path:inset(0 100% 0 0);opacity:1}35%{clip-path:inset(0 0 0 0);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}
   .cfx-flame{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#fff6c4 0,#ffb020 40%,#ff4d00 70%,transparent 72%);filter:blur(.5px);mix-blend-mode:screen}
-  .cfx-hit{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;opacity:0;animation:cfx-hit .4s .1s ease-out forwards}
+  .cfx-hit{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;opacity:0;animation:cfx-hit .35s .17s ease-out forwards}
   .cfx-hit--robot{background:radial-gradient(circle,#fff,#39ff88 40%,transparent 70%)}
-  .cfx-hit--devil{background:radial-gradient(circle,#fff3b0,#ff7a00 40%,transparent 70%);animation-delay:.18s}
+  .cfx-hit--devil{background:radial-gradient(circle,#fff3b0,#ff7a00 40%,transparent 70%);animation-delay:.26s}
   @keyframes cfx-hit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(9)}}
-  .cfx-blasted{animation:cfx-shake .42s cubic-bezier(.36,.07,.19,.97)}
-  .cfx-blasted::after,.cfx-burnt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:cfx-scorch .45s ease-out forwards}
+  .cfx-blasted{animation:cfx-shake .42s .12s cubic-bezier(.36,.07,.19,.97)}
+  .cfx-blasted::after,.cfx-burnt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:cfx-scorch .45s .12s ease-out both}
   .cfx-blasted::after{background:radial-gradient(circle at 50% 50%,rgba(57,255,136,.35),rgba(10,10,10,.5) 60%,transparent);box-shadow:inset 0 0 40px rgba(57,255,136,.5)}
   .cfx-burnt{animation:cfx-shake .42s .1s cubic-bezier(.36,.07,.19,.97)}
   .cfx-burnt::after{background:radial-gradient(circle at 50% 60%,rgba(255,120,0,.4),rgba(30,8,0,.55) 60%,transparent);box-shadow:inset 0 0 50px rgba(255,80,0,.6)}
@@ -373,3 +378,4 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
   @keyframes cfx-shake{0%,100%{transform:none;filter:none}20%{transform:translate(-5px,2px) rotate(-.6deg);filter:brightness(1.6) saturate(1.4)}40%{transform:translate(5px,-2px) rotate(.5deg)}60%{transform:translate(-3px,1px);filter:brightness(.7) sepia(.5)}80%{transform:translate(2px,0)}}
 }
 @media (prefers-reduced-motion:reduce){.cfx-blasted,.cfx-burnt,.cfx-beam{animation:none}}
+@keyframes cfx-scorch{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
