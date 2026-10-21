@@ -375,3 +375,112 @@ var BM_T = BM_HE ? {
     setTimeout(function () { replaying = true; a.click(); replaying = false; }, FX_MS);
   }, true);
 })();
+
+// ---- Cursor FX on touch devices: character rides the right edge with the scroll; taps fire at the target ----
+(function () {
+  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) return; // desktop handled above
+  var nav = document.querySelector('.nav');
+  if (!nav) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var KEY = 'bm-cursor', html = document.documentElement;
+  var base = ((document.querySelector('script[src$="main.js"]') || {}).src || '').replace(/main\.js.*$/, '');
+  var A = base + 'assets/cursor/';
+  var ART = { robot: { idle: A + 'robot-idle.webp', aim: A + 'robot-aim.webp', mx: .97, my: .30 },
+              devil: { idle: A + 'devil-idle.webp', aim: A + 'devil-aim.webp', mx: .94, my: .17 } };
+  var L = html.lang === 'he' ? { label: 'דמות', robot: 'רובוט', devil: 'שד', none: 'ללא' } : { label: 'Character', robot: 'Robot', devil: 'Devil', none: 'Off' };
+  var OFF = '<svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 1.6L10 19z"/></svg>';
+  var mode = localStorage.getItem(KEY) || 'none';
+  if (!ART[mode]) mode = 'none';
+  html.classList.add('cfx-touch');
+
+  // Compact header control: one round button that opens a small menu
+  var wrap = document.createElement('div'); wrap.className = 'cfx-m';
+  var btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'cfx-m__btn'; btn.setAttribute('aria-haspopup', 'true'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-label', L.label);
+  var sw = document.createElement('div');
+  sw.className = 'cfx-switch'; sw.setAttribute('role', 'radiogroup'); sw.setAttribute('aria-label', L.label);
+  ['robot', 'devil', 'none'].forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cfx-switch__opt'; b.dataset.mode = m; b.setAttribute('role', 'radio');
+    b.innerHTML = '<span class="cfx-switch__ico">' + (ART[m] ? '<img src="' + ART[m].idle + '" alt="">' : OFF) + '</span><span>' + L[m] + '</span>';
+    b.addEventListener('click', function () { set(m); open(false); });
+    sw.appendChild(b);
+  });
+  wrap.appendChild(btn); wrap.appendChild(sw); nav.appendChild(wrap);
+  function open(o) { wrap.classList.toggle('cfx-m--open', o); btn.setAttribute('aria-expanded', o); }
+  btn.addEventListener('click', function () { open(!wrap.classList.contains('cfx-m--open')); });
+  document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) open(false); }, true);
+
+  // Rider
+  var rider = document.createElement('div'); rider.className = 'cfx-rider'; rider.setAttribute('aria-hidden', 'true');
+  var img = document.createElement('img'); img.alt = ''; rider.appendChild(img);
+  document.body.appendChild(rider);
+  function set(m) {
+    mode = m; localStorage.setItem(KEY, m);
+    html.classList.toggle('cfx-on', m !== 'none');
+    wrap.classList.toggle('cfx-m--on', m !== 'none');
+    btn.innerHTML = ART[m] ? '<img src="' + ART[m].idle + '" alt="">' : OFF;
+    if (ART[m]) { img.src = ART[m].idle; new Image().src = ART[m].aim; }
+    [].forEach.call(sw.children, function (b) { b.setAttribute('aria-checked', b.dataset.mode === m); });
+    cur = goal(); place(cur);
+  }
+  var cur = 0, raf = 0;
+  function goal() {
+    var top = nav.offsetHeight + 6, bot = 8, h = rider.offsetHeight || 46;
+    var max = document.documentElement.scrollHeight - innerHeight;
+    var p = max > 0 ? Math.min(Math.max(scrollY / max, 0), 1) : 0;
+    return top + p * (innerHeight - top - bot - h);
+  }
+  function place(v) { rider.style.transform = 'translate3d(0,' + v.toFixed(1) + 'px,0)'; }
+  function tick() {
+    var g = goal(); cur += (g - cur) * (still ? 1 : .18); place(cur);
+    raf = Math.abs(g - cur) > .3 ? requestAnimationFrame(tick) : 0;
+  }
+  function kick() { if (!raf && mode !== 'none') raf = requestAnimationFrame(tick); }
+  addEventListener('scroll', kick, { passive: true });
+  addEventListener('resize', kick);
+  set(mode);
+
+  function shoot(target, px, py) {
+    var r = target.getBoundingClientRect();
+    var tx = target.classList.contains('card') ? r.left + r.width / 2 : px, ty = target.classList.contains('card') ? Math.min(Math.max(py, r.top + 20), r.bottom - 20) : py;
+    var art = ART[mode], rr = rider.getBoundingClientRect(), left = tx < rr.left + rr.width / 2;
+    img.src = art.aim; rider.classList.add('cfx-recoil'); rider.classList.toggle('cfx-left', left);
+    var h = rr.height, w = h * (img.naturalWidth / img.naturalHeight || .7), ir = rr.right - w;
+    var sx = left ? rr.right - w * art.mx : ir + w * art.mx, sy = rr.bottom - h + h * art.my;
+    var dx = tx - sx, dy = ty - sy, len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    var fx = document.createElement('div'); fx.className = 'cfx-fx'; document.body.appendChild(fx);
+    if (mode === 'robot') {
+      var beam = document.createElement('i'); beam.className = 'cfx-beam';
+      beam.style.cssText = 'left:' + sx + 'px;top:' + sy + 'px;width:' + len + 'px;transform:rotate(' + ang + 'deg)';
+      fx.appendChild(beam);
+    } else {
+      for (var i = 0; i < 18; i++) {
+        var p = document.createElement('i'); p.className = 'cfx-flame';
+        var j = (Math.random() - .5) * .35, k = .85 + Math.random() * .3;
+        p.style.cssText = 'left:' + sx + 'px;top:' + sy + 'px';
+        p.animate([{ transform: 'translate(-50%,-50%) scale(.3)', opacity: 1 },
+          { transform: 'translate(calc(-50% + ' + (dx * k + dy * j) + 'px),calc(-50% + ' + (dy * k - dx * j) + 'px)) scale(' + (1.4 + Math.random()) + ')', opacity: 0 }],
+          { duration: 300, delay: 90 + i * 8, easing: 'cubic-bezier(.2,.6,.4,1)', fill: 'both' });
+        fx.appendChild(p);
+      }
+    }
+    var hit = document.createElement('i'); hit.className = 'cfx-hit cfx-hit--' + mode;
+    hit.style.cssText = 'left:' + tx + 'px;top:' + ty + 'px'; fx.appendChild(hit);
+    target.classList.remove('cfx-blasted', 'cfx-burnt'); void target.offsetWidth;
+    target.classList.add(mode === 'robot' ? 'cfx-blasted' : 'cfx-burnt');
+    setTimeout(function () { fx.remove(); rider.classList.remove('cfx-recoil', 'cfx-left'); if (ART[mode]) img.src = ART[mode].idle; }, 560);
+    setTimeout(function () { target.classList.remove('cfx-blasted', 'cfx-burnt'); }, 900);
+  }
+
+  var replaying = false;
+  document.addEventListener('click', function (e) {
+    if (replaying || mode === 'none' || still) return;
+    if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest('a[href]');
+    if (!a || wrap.contains(a)) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    shoot(a.closest('.card') || a, e.clientX, e.clientY);
+    setTimeout(function () { replaying = true; a.click(); replaying = false; }, 430);
+  }, true);
+})();

@@ -338,8 +338,8 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
 .bm-motion .film .video__frame{transform:scale(calc(.84 + .16*var(--p,1))) rotateX(calc((1 - var(--p,1))*10deg));clip-path:inset(calc((1 - var(--p,1))*14%) calc((1 - var(--p,1))*6%) round 6px);filter:brightness(calc(.55 + .45*var(--p,1)));will-change:transform,clip-path}
 .bm-motion .film .video__frame img{transform:scale(calc(1.18 - .18*var(--p,1)));transition:none}
 
-/* ---- Cursor FX (desktop only) ---- */
-.cfx-switch,.cfx-sprite,.cfx-fx{display:none}
+/* ---- Cursor FX ---- */
+.cfx-switch,.cfx-sprite,.cfx-m,.cfx-rider{display:none}
 @media (hover:hover) and (pointer:fine){
   .cfx-switch{display:inline-flex;align-items:center;gap:2px;padding:3px;margin-inline:auto 1.5rem;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(20,19,18,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
   .cfx-switch__opt{display:inline-flex;align-items:center;gap:.4rem;padding:.32rem .7rem .32rem .5rem;border:0;border-radius:999px;background:transparent;color:var(--muted);font:500 .62rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s}
@@ -361,21 +361,66 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
   .cfx-sprite.cfx-left.cfx-recoil>img{animation-name:cfx-kick-l}
   @keyframes cfx-kick{30%{transform:translateX(-3px) rotate(-4deg)}}
   @keyframes cfx-kick-l{0%,100%{transform:scaleX(-1)}30%{transform:scaleX(-1) translateX(-3px) rotate(-4deg)}}
-  .cfx-fx{display:block;position:fixed;inset:0;z-index:9998;pointer-events:none}
-  .cfx-beam{position:absolute;height:3px;margin-top:-1.5px;transform-origin:0 50%;border-radius:3px;background:linear-gradient(90deg,#d9ffe8,#39ff88 30%,#00e05a);box-shadow:0 0 6px #39ff88,0 0 16px #00ff66,0 0 30px rgba(0,255,102,.6);animation:cfx-beam .3s .09s ease-out both}
-  @keyframes cfx-beam{0%{clip-path:inset(0 100% 0 0);opacity:1}35%{clip-path:inset(0 0 0 0);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}
-  .cfx-flame{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#fff6c4 0,#ffb020 40%,#ff4d00 70%,transparent 72%);filter:blur(.5px);mix-blend-mode:screen}
-  .cfx-hit{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;opacity:0;animation:cfx-hit .35s .17s ease-out forwards}
-  .cfx-hit--robot{background:radial-gradient(circle,#fff,#39ff88 40%,transparent 70%)}
-  .cfx-hit--devil{background:radial-gradient(circle,#fff3b0,#ff7a00 40%,transparent 70%);animation-delay:.26s}
-  @keyframes cfx-hit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(9)}}
-  .cfx-blasted{animation:cfx-shake .42s .12s cubic-bezier(.36,.07,.19,.97)}
-  .cfx-blasted::after,.cfx-burnt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:cfx-scorch .45s .12s ease-out both}
-  .cfx-blasted::after{background:radial-gradient(circle at 50% 50%,rgba(57,255,136,.35),rgba(10,10,10,.5) 60%,transparent);box-shadow:inset 0 0 40px rgba(57,255,136,.5)}
-  .cfx-burnt{animation:cfx-shake .42s .1s cubic-bezier(.36,.07,.19,.97)}
-  .cfx-burnt::after{background:radial-gradient(circle at 50% 60%,rgba(255,120,0,.4),rgba(30,8,0,.55) 60%,transparent);box-shadow:inset 0 0 50px rgba(255,80,0,.6)}
-  .card.cfx-blasted,.card.cfx-burnt{position:relative}
-  @keyframes cfx-shake{0%,100%{transform:none;filter:none}20%{transform:translate(-5px,2px) rotate(-.6deg);filter:brightness(1.6) saturate(1.4)}40%{transform:translate(5px,-2px) rotate(.5deg)}60%{transform:translate(-3px,1px);filter:brightness(.7) sepia(.5)}80%{transform:translate(2px,0)}}
 }
+/* Shot effects (shared by desktop cursor and touch rider) */
+.cfx-fx{display:block;position:fixed;inset:0;z-index:9998;pointer-events:none}
+.cfx-beam{position:absolute;height:3px;margin-top:-1.5px;transform-origin:0 50%;border-radius:3px;background:linear-gradient(90deg,#d9ffe8,#39ff88 30%,#00e05a);box-shadow:0 0 6px #39ff88,0 0 16px #00ff66,0 0 30px rgba(0,255,102,.6);animation:cfx-beam .3s .09s ease-out both}
+@keyframes cfx-beam{0%{clip-path:inset(0 100% 0 0);opacity:1}35%{clip-path:inset(0 0 0 0);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}
+.cfx-flame{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#fff6c4 0,#ffb020 40%,#ff4d00 70%,transparent 72%);filter:blur(.5px);mix-blend-mode:screen}
+.cfx-hit{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;opacity:0;animation:cfx-hit .35s .17s ease-out forwards}
+.cfx-hit--robot{background:radial-gradient(circle,#fff,#39ff88 40%,transparent 70%)}
+.cfx-hit--devil{background:radial-gradient(circle,#fff3b0,#ff7a00 40%,transparent 70%);animation-delay:.26s}
+@keyframes cfx-hit{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(9)}}
+.cfx-blasted{animation:cfx-shake .42s .12s cubic-bezier(.36,.07,.19,.97)}
+.cfx-blasted::after,.cfx-burnt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:cfx-scorch .45s .12s ease-out both}
+.cfx-blasted::after{background:radial-gradient(circle at 50% 50%,rgba(57,255,136,.35),rgba(10,10,10,.5) 60%,transparent);box-shadow:inset 0 0 40px rgba(57,255,136,.5)}
+.cfx-burnt{animation:cfx-shake .42s .1s cubic-bezier(.36,.07,.19,.97)}
+.cfx-burnt::after{background:radial-gradient(circle at 50% 60%,rgba(255,120,0,.4),rgba(30,8,0,.55) 60%,transparent);box-shadow:inset 0 0 50px rgba(255,80,0,.6)}
+.card.cfx-blasted,.card.cfx-burnt{position:relative}
+@keyframes cfx-shake{0%,100%{transform:none;filter:none}20%{transform:translate(-5px,2px) rotate(-.6deg);filter:brightness(1.6) saturate(1.4)}40%{transform:translate(5px,-2px) rotate(.5deg)}60%{transform:translate(-3px,1px);filter:brightness(.7) sepia(.5)}80%{transform:translate(2px,0)}}
 @media (prefers-reduced-motion:reduce){.cfx-blasted,.cfx-burnt,.cfx-beam{animation:none}}
 @keyframes cfx-scorch{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+
+/* ---- Cursor FX on touch: compact header toggle + scroll-rider character ---- */
+@media not ((hover:hover) and (pointer:fine)){
+  html.cfx-touch .cfx-m{display:block;position:relative;flex:none;margin-inline-start:-.25rem}
+  .cfx-m__btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(20,19,18,.55);color:var(--muted);-webkit-tap-highlight-color:transparent}
+  .cfx-m__btn[aria-expanded="true"],.cfx-m--on .cfx-m__btn{border-color:rgba(237,187,0,.5);box-shadow:0 0 0 3px rgba(237,187,0,.08)}
+  .cfx-m__btn img{height:20px;width:auto;max-width:none}.cfx-m__btn svg{width:13px;height:13px;fill:currentColor}
+  .cfx-m .cfx-switch{display:none;position:absolute;top:calc(100% + 10px);inset-inline-end:0;flex-direction:column;align-items:stretch;gap:2px;padding:5px;min-width:140px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(20,19,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 40px rgba(0,0,0,.55)}
+  .cfx-m--open .cfx-switch{display:flex;animation:cfx-pop .18s ease-out}
+  @keyframes cfx-pop{from{opacity:0;transform:translateY(-4px)}}
+  .cfx-m .cfx-switch__opt{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border:0;border-radius:10px;background:transparent;color:var(--muted);font:500 .7rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;-webkit-tap-highlight-color:transparent}
+  html[dir="rtl"] .cfx-m .cfx-switch__opt{letter-spacing:normal;font-size:.8rem}
+  .cfx-m .cfx-switch__opt[aria-checked="true"]{background:rgba(237,187,0,.14);color:var(--c-yellow)}
+  .cfx-m .cfx-switch__ico{display:inline-flex;width:18px;height:22px;align-items:center;justify-content:center}
+  .cfx-m .cfx-switch__ico img{height:100%;width:auto;max-width:none}.cfx-m .cfx-switch__ico svg{width:12px;height:12px;fill:currentColor}
+  html.cfx-touch.cfx-on .cfx-rider{display:block}
+  .cfx-rider{position:fixed;right:2px;top:0;z-index:45;height:46px;width:30px;pointer-events:none;will-change:transform}
+  .cfx-rider>img{position:absolute;right:0;bottom:0;height:100%;width:auto;max-width:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.75));transform-origin:50% 90%}
+  .cfx-rider.cfx-left>img{transform:scaleX(-1)}
+  .cfx-rider.cfx-recoil>img{animation:cfx-kick-l .3s .09s ease-out}
+  .cfx-rider:not(.cfx-left).cfx-recoil>img{animation-name:cfx-kick}
+}
+@keyframes cfx-kick{30%{transform:translateX(-3px) rotate(-4deg)}}
+@keyframes cfx-kick-l{0%,100%{transform:scaleX(-1)}30%{transform:scaleX(-1) translateX(-3px) rotate(-4deg)}}
+/* Make room for the character toggle in the phone header */
+@media (max-width:440px){
+  html.cfx-touch .nav{padding-inline:.85rem;gap:.55rem}
+  html.cfx-touch .nav__links{gap:.65rem}
+  html.cfx-touch .nav__links a{letter-spacing:.08em}
+  html.cfx-touch[dir="rtl"] .nav__links a{letter-spacing:normal}
+  html.cfx-touch .cfx-m{margin-inline-start:0}
+  html.cfx-touch .cfx-m__btn{width:28px;height:28px}
+}
+@media (max-width:374px){
+  html.cfx-touch .nav__links{gap:.5rem}
+  html.cfx-touch .nav__links a{letter-spacing:.02em}
+}
+@media (max-width:400px){
+  html.cfx-touch .nav{gap:.45rem}
+  html.cfx-touch .nav__links{gap:.5rem}
+  html.cfx-touch .nav__links a{letter-spacing:.03em}
+  html.cfx-touch .cfx-m__btn{width:26px;height:26px}
+  html.cfx-touch .cfx-m__btn img{height:18px}
+}
