@@ -192,7 +192,7 @@ var BM_T = BM_HE ? {
     }
     if (frame) {
       var top = frame.parentNode.getBoundingClientRect().top; // wrapper isn't transformed
-      frame.style.setProperty('--p', Math.min(1, Math.max(0, (vh - top) / (vh * 0.6))).toFixed(3));
+      frame.style.setProperty('--p', Math.min(1, Math.max(0, (vh - top) / (vh * 0.5))).toFixed(3));
     }
   }
   function requestUpdate() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
@@ -206,4 +206,73 @@ var BM_T = BM_HE ? {
     }, { passive: true });
   }
   update();
+})();
+
+// Menu "camera dolly": the page tilts back into depth, jumps, and the target section flies in.
+// In-page anchors keep the hash, Back button and focus; other site pages get the exit move, then load.
+// prefers-reduced-motion (or no Web Animations support) gets a plain jump with the same hash/focus handling.
+(function () {
+  var main = document.querySelector('main');
+  if (!main || !window.matchMedia) return;
+  var still = !main.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var small = window.matchMedia('(max-width: 600px)').matches;
+  var html = document.documentElement;
+  var depth = small ? { out: 'rotateX(6deg) translateZ(-160px)', inn: 'rotateX(-5deg) translateZ(-220px)', blur: 'brightness(.4)', t1: 300, t2: 450 }
+                    : { out: 'rotateX(12deg) translateZ(-420px)', inn: 'rotateX(-9deg) translateZ(-600px)', blur: 'blur(6px) brightness(.4)', t1: 380, t2: 560 };
+  var busy = false;
+
+  function centre() { main.style.transformOrigin = '50% ' + (window.scrollY + window.innerHeight / 2) + 'px'; }
+  function done(a) { return new Promise(function (r) { a.onfinish = r; a.oncancel = r; }); }
+  function reset() { main.getAnimations().forEach(function (a) { a.cancel(); }); main.style.opacity = ''; busy = false; }
+
+  function land(target) {
+    var prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+    var hash = '#' + target.id;
+    if (location.hash !== hash) history.pushState(null, '', hash);
+    target.scrollIntoView({ block: 'start' });
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+    html.style.scrollBehavior = prev;
+  }
+
+  function dolly(target, url) {
+    if (still) { if (url) location.href = url; else land(target); return; }
+    busy = true;
+    centre();
+    var out = main.animate([{ transform: 'none', filter: 'none', opacity: 1 },
+      { transform: 'perspective(1200px) ' + depth.out, filter: depth.blur, opacity: .2 }],
+      { duration: depth.t1, easing: 'cubic-bezier(.55,0,.8,.2)', fill: 'forwards' });
+    done(out).then(function () {
+      if (url) { location.href = url; return; }
+      // Drop the exit transform before scrolling, or the target is measured on a shrunken page.
+      main.style.opacity = '0';
+      out.cancel();
+      land(target);
+      main.style.opacity = '';
+      centre();
+      window.dispatchEvent(new Event('scroll')); // let the hero/poster effects catch up
+      return done(main.animate([
+        { transform: 'perspective(1200px) ' + depth.inn, filter: depth.blur, opacity: 0 },
+        { transform: 'none', filter: 'none', opacity: 1 }],
+        { duration: depth.t2, easing: 'cubic-bezier(.15,.75,.3,1)' }));
+    }).then(function () { busy = false; });
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('.nav__links a, .nav__brand, .hero a[href^="#"]');
+    if (!a || busy || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (a.target === '_blank' || a.classList.contains('lang-switch') || a.hasAttribute('hreflang')) return;
+    var href = a.getAttribute('href') || '';
+    if (href.charAt(0) === '#') {
+      var target = document.getElementById(href.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      dolly(target);
+    } else if (a.origin === location.origin) {
+      e.preventDefault();
+      dolly(null, a.href);
+    }
+  });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) reset(); });
 })();
