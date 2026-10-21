@@ -276,3 +276,103 @@ var BM_T = BM_HE ? {
   });
   window.addEventListener('pageshow', function (e) { if (e.persisted) reset(); });
 })();
+
+// ---- Cursor FX (desktop only): Robot / Devil / None switch in the header ----
+(function () {
+  var mq = window.matchMedia('(hover:hover) and (pointer:fine)');
+  if (!mq.matches || !document.querySelector('.nav')) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var KEY = 'bm-cursor', html = document.documentElement;
+  var base = (document.currentScript && document.currentScript.src) ||
+    (document.querySelector('script[src$="main.js"]') || {}).src || '';
+  base = base.replace(/main\.js.*$/, '');
+  var ROBOT = '<img src="' + base + 'assets/icons/ai-tutor-bot.svg" alt="">';
+  var DEVIL = '<svg viewBox="0 0 64 80" aria-hidden="true"><path d="M17 22 C10 14 9 6 12 1 C15 9 20 13 25 15Z M47 22 C54 14 55 6 52 1 C49 9 44 13 39 15Z" fill="#ffb347" stroke="#c45a00" stroke-width="1.2"/>' +
+    '<rect x="12" y="12" width="40" height="40" rx="18" fill="#d6283f" stroke="#7d0f22" stroke-width="1.5"/>' +
+    '<path d="M20 28 L29 31 M44 28 L35 31" stroke="#2a0a10" stroke-width="2.4" stroke-linecap="round"/>' +
+    '<ellipse cx="25.5" cy="34" rx="2.4" ry="2.8" fill="#ffe36b"/><ellipse cx="38.5" cy="34" rx="2.4" ry="2.8" fill="#ffe36b"/>' +
+    '<path d="M23 42 Q32 49 41 42" stroke="#2a0a10" stroke-width="2.2" fill="#5a0715" stroke-linecap="round"/>' +
+    '<path d="M27 43.5 l1.5 3 1.5-2.6 M35 43.5 l-1.5 3-1.5-2.6" fill="#fff"/>' +
+    '<path d="M32 52 C32 62 46 64 50 74 L54 68 L56 77 L48 75" stroke="#7d0f22" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var L = html.lang === 'he' ? { label: 'סמן', robot: 'רובוט', devil: 'שד', none: 'ללא' } : { label: 'Cursor', robot: 'Robot', devil: 'Devil', none: 'Off' };
+  var mode = localStorage.getItem(KEY) || 'none';
+
+  // Header switch
+  var sw = document.createElement('div');
+  sw.className = 'cfx-switch'; sw.setAttribute('role', 'radiogroup'); sw.setAttribute('aria-label', L.label);
+  ['robot', 'devil', 'none'].forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cfx-switch__opt'; b.dataset.mode = m; b.setAttribute('role', 'radio');
+    b.innerHTML = '<span class="cfx-switch__ico">' + (m === 'robot' ? ROBOT : m === 'devil' ? DEVIL : '<svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 1.6L10 19z"/></svg>') + '</span><span class="cfx-switch__txt">' + L[m] + '</span>';
+    b.addEventListener('click', function () { set(m); });
+    sw.appendChild(b);
+  });
+  var nav = document.querySelector('.nav'), links = nav.querySelector('.nav__links');
+  nav.insertBefore(sw, links);
+
+  // Cursor sprite
+  var sprite = document.createElement('div');
+  sprite.className = 'cfx-sprite'; sprite.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(sprite);
+  var x = -100, y = -100;
+  function set(m) {
+    mode = m; localStorage.setItem(KEY, m);
+    html.classList.toggle('cfx-on', m !== 'none');
+    sprite.innerHTML = m === 'robot' ? ROBOT : m === 'devil' ? DEVIL : '';
+    sprite.dataset.mode = m;
+    [].forEach.call(sw.children, function (b) { b.setAttribute('aria-checked', b.dataset.mode === m); });
+  }
+  set(mode);
+  var TEXTY = 'input, textarea, select, [contenteditable="true"]';
+  document.addEventListener('mousemove', function (e) {
+    x = e.clientX; y = e.clientY;
+    sprite.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    sprite.classList.toggle('cfx-hide', !!(e.target.closest && e.target.closest(TEXTY)));
+  }, { passive: true });
+  document.addEventListener('mouseleave', function () { sprite.classList.add('cfx-hide'); });
+
+  // Shots
+  function shoot(target) {
+    var r = target.getBoundingClientRect();
+    var tx = Math.min(Math.max(x, r.left + 12), r.right - 12), ty = Math.min(Math.max(y + 40, r.top + 12), r.bottom - 12);
+    if (Math.hypot(tx - x, ty - y) < 30) { tx = r.left + r.width / 2; ty = r.top + r.height / 2; }
+    var sx = x + 22, sy = y + 14; // from the character's mouth/eyes
+    var fx = document.createElement('div'); fx.className = 'cfx-fx'; document.body.appendChild(fx);
+    var dx = tx - sx, dy = ty - sy, len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (mode === 'robot') {
+      var beam = document.createElement('i'); beam.className = 'cfx-beam';
+      beam.style.cssText = 'left:' + sx + 'px;top:' + sy + 'px;width:' + len + 'px;transform:rotate(' + ang + 'deg)';
+      fx.appendChild(beam);
+    } else {
+      for (var i = 0; i < 16; i++) {
+        var p = document.createElement('i'); p.className = 'cfx-flame';
+        var j = (Math.random() - .5) * 0.5, k = 0.85 + Math.random() * 0.3, d = i * 9;
+        p.style.cssText = 'left:' + sx + 'px;top:' + sy + 'px';
+        p.animate([{ transform: 'translate(-50%,-50%) scale(.3)', opacity: 1 },
+          { transform: 'translate(calc(-50% + ' + (dx * k + dy * j) + 'px),calc(-50% + ' + (dy * k - dx * j) + 'px)) scale(' + (1.4 + Math.random()) + ')', opacity: 0 }],
+          { duration: 280, delay: d, easing: 'cubic-bezier(.2,.6,.4,1)', fill: 'both' });
+        fx.appendChild(p);
+      }
+    }
+    var hit = document.createElement('i'); hit.className = 'cfx-hit cfx-hit--' + mode;
+    hit.style.cssText = 'left:' + tx + 'px;top:' + ty + 'px'; fx.appendChild(hit);
+    sprite.classList.add('cfx-recoil');
+    target.classList.remove('cfx-blasted', 'cfx-burnt'); void target.offsetWidth;
+    target.classList.add(mode === 'robot' ? 'cfx-blasted' : 'cfx-burnt');
+    setTimeout(function () { fx.remove(); sprite.classList.remove('cfx-recoil'); }, 520);
+    setTimeout(function () { target.classList.remove('cfx-blasted', 'cfx-burnt'); }, 900);
+  }
+
+  // Intercept before the dolly handler (capture phase), play the shot, then replay the click.
+  var replaying = false, FX_MS = 360;
+  document.addEventListener('click', function (e) {
+    if (replaying || mode === 'none' || still) return;
+    if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest('a[href]');
+    if (!a || a.closest('.cfx-switch') || a.closest(TEXTY)) return;
+    var target = a.closest('.card') || a;
+    e.preventDefault(); e.stopImmediatePropagation();
+    shoot(target);
+    setTimeout(function () { replaying = true; a.click(); replaying = false; }, FX_MS);
+  }, true);
+})();
