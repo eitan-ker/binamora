@@ -330,3 +330,10 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
 @media (max-width:339px){
   .nav__links a[href="#projects"]{display:none}
 }
+
+/* ============ Scroll depth: hero parallax + cinematic film reveal (enabled by main.js) ============ */
+.bm-motion .hero__bg{animation:none;transform:translate3d(var(--px,0px),calc(var(--py,0px) + var(--sy,0px)),0) scale(1.12);will-change:transform}
+.bm-motion .hero__content{transform:translate3d(0,var(--cy,0px),0);opacity:var(--co,1);will-change:transform,opacity}
+.bm-motion .film .video{perspective:1200px}
+.bm-motion .film .video__frame{transform:scale(calc(.84 + .16*var(--p,1))) rotateX(calc((1 - var(--p,1))*10deg));clip-path:inset(calc((1 - var(--p,1))*14%) calc((1 - var(--p,1))*6%) round 6px);filter:brightness(calc(.55 + .45*var(--p,1)));will-change:transform,clip-path}
+.bm-motion .film .video__frame img{transform:scale(calc(1.18 - .18*var(--p,1)));transition:none}

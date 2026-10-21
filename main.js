@@ -170,3 +170,40 @@ var BM_T = BM_HE ? {
   tick();
   timer = setInterval(tick, 30000);
 })();
+
+// Scroll depth: hero parallax + cinematic reveal of the film still.
+// Skipped entirely for prefers-reduced-motion (page stays static).
+(function () {
+  if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var bg = document.querySelector('.hero__bg');
+  var content = document.querySelector('.hero__content');
+  var frame = document.querySelector('.film .video__frame');
+  if (!bg || !content) return;
+  document.documentElement.classList.add('bm-motion');
+  var ticking = false;
+
+  function update() {
+    ticking = false;
+    var y = window.scrollY, vh = window.innerHeight;
+    if (y < vh * 1.2) {
+      bg.style.setProperty('--sy', (y * 0.35) + 'px');
+      content.style.setProperty('--cy', (y * 0.18) + 'px');
+      content.style.setProperty('--co', Math.max(0, 1 - y / (vh * 0.7)).toFixed(3));
+    }
+    if (frame) {
+      var top = frame.parentNode.getBoundingClientRect().top; // wrapper isn't transformed
+      frame.style.setProperty('--p', Math.min(1, Math.max(0, (vh - top) / (vh * 0.6))).toFixed(3));
+    }
+  }
+  function requestUpdate() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate);
+  if (window.matchMedia('(pointer: fine)').matches) {
+    window.addEventListener('pointermove', function (e) {
+      bg.style.setProperty('--px', ((0.5 - e.clientX / window.innerWidth) * 24) + 'px');
+      bg.style.setProperty('--py', ((0.5 - e.clientY / window.innerHeight) * 16) + 'px');
+    }, { passive: true });
+  }
+  update();
+})();
