@@ -60,6 +60,45 @@
         "name": "BinaMora",
         "url": "https://binamora.com/",
         "logo": "https://binamora.com/icon-512.png"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://binamora.com/tutor/#faq",
+        "inLanguage": "en",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is AI Tutor?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "AI Tutor is a study companion for university students. You upload lecture slides as a PDF, and it turns them into a researched, narrated lecture, then helps you with problem sets in a chat."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does AI Tutor turn lecture slides into a lecture?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It reads the whole deck to work out the topic and key terms, researches the topic on the web, writes one cohesive lecture across all the slides and voices it slide by slide. The sources it used are kept, so you can see what the lecture is based on."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are the answers to problem sets checked?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A main agent solves the problem step by step, then a separate supervisor agent solves it again independently and compares. Each answer is marked as verified, corrected or uncertain, so you know when to check your course material."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does AI Tutor work in Hebrew?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. It narrates and chats in your language, for example Hebrew, English or Russian. Lectures can be voiced in a different language than the slides, and the chat answers in the language you write in."
+            }
+          }
+        ]
       }
     ]
   }
@@ -171,6 +210,33 @@
       </div>
     </section>
 
+    <!-- ============ ABOUT / FAQ ============ -->
+    <section class="section tutor-features" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <p class="eyebrow reveal">About AI Tutor</p>
+        <h2 class="section__title reveal" id="faq-title">An AI tutor from your lecture slides.</h2>
+        <p class="contact__lede reveal">AI Tutor is an AI tutor for university students that starts from the material you already have. Upload your lecture slides and it researches the topic and builds a narrated lecture from them, then helps you work through problem sets in a chat where a second agent double-checks every answer. It works in Hebrew, English and Russian. AI Tutor is still in development and not open to the public yet.</p>
+        <ul class="tutor-steps">
+          <li class="tutor-step reveal">
+            <h3>What is AI Tutor?</h3>
+            <p>AI Tutor is a study companion for university students. You upload lecture slides as a PDF, and it turns them into a researched, narrated lecture, then helps you with problem sets in a chat.</p>
+          </li>
+          <li class="tutor-step reveal">
+            <h3>How does AI Tutor turn lecture slides into a lecture?</h3>
+            <p>It reads the whole deck to work out the topic and key terms, researches the topic on the web, writes one cohesive lecture across all the slides and voices it slide by slide. The sources it used are kept, so you can see what the lecture is based on.</p>
+          </li>
+          <li class="tutor-step reveal">
+            <h3>How are the answers to problem sets checked?</h3>
+            <p>A main agent solves the problem step by step, then a separate supervisor agent solves it again independently and compares. Each answer is marked as verified, corrected or uncertain, so you know when to check your course material.</p>
+          </li>
+          <li class="tutor-step reveal">
+            <h3>Does AI Tutor work in Hebrew?</h3>
+            <p>Yes. It narrates and chats in your language, for example Hebrew, English or Russian. Lectures can be voiced in a different language than the slides, and the chat answers in the language you write in.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
     <!-- ============ EARLY ACCESS ============ -->
     <section class="section contact" id="access" aria-labelledby="access-title">
       <div class="container contact__inner">
@@ -231,7 +297,7 @@
   <footer class="footer">
     <a class="footer__home" href="../" aria-label="BinaMora home"><div class="footer__brand"><span class="visually-hidden">BinaMora</span><span class="bm-logo bm-logo--footer"><span class="bm-logo__mark" aria-hidden="true" style="display:inline-flex;align-items:baseline;font-family:'Space Grotesk',sans-serif;line-height:1;font-size:calc(var(--bm)*100);color:#f3f2f2"><span style="position:relative;z-index:1;flex:none;width:calc(var(--bm)*50);height:calc(var(--bm)*114.4);margin-right:calc(var(--bm)*7)"><span style="position:absolute;left:calc(var(--bm)*-2.5);bottom:calc(var(--bm)*2.5);width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#edbb00"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #edbb00;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#d6006c"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #d6006c;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:calc(var(--bm)*2.5);bottom:calc(var(--bm)*-2.5);width:calc(var(--bm)*50);height:calc(var(--bm)*90.4);mix-blend-mode:screen"><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*12.5);height:calc(var(--bm)*90.4);background:#0088b0"></span><span style="position:absolute;left:0;bottom:0;width:calc(var(--bm)*50);height:calc(var(--bm)*50);border:calc(var(--bm)*12.5) solid #0088b0;border-radius:50%;box-sizing:border-box;background:transparent"></span></span><span style="position:absolute;left:calc(var(--bm)*19.5);bottom:calc(var(--bm)*51.76);font-size:calc(var(--bm)*60);font-weight:500;letter-spacing:-0.02em;line-height:1">na</span><span style="position:absolute;left:calc(var(--bm)*-4.25);bottom:calc(var(--bm)*100.9);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#edbb00;mix-blend-mode:screen"></span><span style="position:absolute;left:calc(var(--bm)*-1.75);bottom:calc(var(--bm)*98.4);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#d6006c;mix-blend-mode:screen"></span><span style="position:absolute;left:calc(var(--bm)*0.75);bottom:calc(var(--bm)*95.9);width:calc(var(--bm)*16);height:calc(var(--bm)*16);border-radius:50%;background:#0088b0;mix-blend-mode:screen"></span></span><span style="position:relative;display:inline-block;flex:none;width:0;height:calc(var(--bm)*50);z-index:0"><span style="position:absolute;left:calc(var(--bm)*-36);bottom:calc(var(--bm)*-0.4);width:calc(var(--bm)*42);height:calc(var(--bm)*30);border-bottom:calc(var(--bm)*9.375) solid #f3f2f2;border-right:calc(var(--bm)*9.375) solid #f3f2f2;border-radius:0 0 calc(var(--bm)*42) 0 / 0 0 calc(var(--bm)*30) 0;box-sizing:border-box;transform:skewX(-14deg);transform-origin:bottom left"></span></span><span style="font-family:'Dancing Script', cursive;font-size:calc(var(--bm)*110);font-weight:700;line-height:1;color:#f3f2f2;margin-left:calc(var(--bm)*2);position:relative;z-index:0;letter-spacing:0">mora</span></span></span></div></a>
     <a class="footer__link" href="../">← Back to BinaMora</a>
-    <p class="footer__copy">© 2026 BinaMora</p>
+    <p class="footer__copy">© 2026 BinaMora · Eitan Ker (Kerzhner)</p>
   </footer>
 
   <script src="../main.js" defer></script>
