@@ -424,3 +424,15 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
   html.cfx-touch .cfx-m__btn{width:26px;height:26px}
   html.cfx-touch .cfx-m__btn img{height:18px}
 }
+
+/* ============ 3D devil stage (assets/3d/devil-stage.js; poster first, WebGL canvas fades in) ============ */
+.devil-stage{position:relative;overflow:hidden;display:grid;place-items:center;padding:clamp(.5rem,2vw,1.5rem) 1.25rem clamp(2.5rem,6vw,4.5rem);background:linear-gradient(var(--bg-2),var(--bg));border-top:1px solid rgba(255,255,255,.05)}
+.devil-stage__glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 46% 52% at 50% 60%,rgba(255,92,24,.2),rgba(150,40,10,.08) 55%,transparent 75%)}
+.devil-stage__frame::before{content:"";position:absolute;left:5%;right:5%;bottom:0;height:12%;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(255,110,30,.26),transparent 100%)}
+.devil-stage__frame{position:relative;width:min(100%,560px,calc(82vh * .8));width:min(100%,560px,calc(82svh * .8));aspect-ratio:4/5;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.devil-stage__poster,.devil-stage__canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.devil-stage__poster{object-fit:contain;transition:opacity .4s ease .55s;pointer-events:none}
+.devil-stage__canvas{opacity:0;transition:opacity .6s ease;touch-action:pan-y;outline:none}
+.devil-stage.is-live .devil-stage__canvas{opacity:1}
+.devil-stage.is-live .devil-stage__poster{opacity:0}
+@media (max-width:600px){.devil-stage{padding-inline:.75rem}.devil-stage__frame{width:min(100%,420px)}}
