@@ -1,7 +1,7 @@
 /* BinaMora living background.
    A fixed, full-viewport layer behind the page: a slow glow field plus embers that drift with the scroll position
    (parallax), change tone from section to section, and respond to SMOOTHED SCROLL VELOCITY, so quick scrolling is
-   livelier and stopping eases back to a calm idle. On desktop a faint 3D devil (assets/3d) is lazy-loaded after idle.
+   livelier and stopping eases back to a calm idle. A faint 3D character (devil or robot, assets/3d) is lazy-loaded after idle.
    Light by design: one 2D canvas (glow drawn at ~1/3 resolution), DPR cap, 30fps on phones and when idle,
    paused while the tab is hidden, static glow for prefers-reduced-motion. */
 (function () {
@@ -21,7 +21,7 @@
   /* ---------- palettes: one per section, blended by scroll position ---------- */
   // c: three glow colours; k: overall glow strength; dv: devil visibility; e: ember colour
   var GOLD = [237, 187, 0], AMBER = [214, 126, 30], EMBER = [226, 62, 24], DEEP = [140, 28, 22],
-      MAG = [214, 0, 108], CYAN = [0, 136, 176], ICE = [98, 197, 238];
+      MAG = [214, 0, 108], CYAN = [0, 136, 176], ICE = [98, 197, 238], DEEPB = [20, 52, 120];
   var PAL = {
     hero:  { c: [AMBER, EMBER, DEEP], k: .8, dv: 0,   e: [255, 176, 70] },
     film:  { c: [EMBER, AMBER, DEEP], k: 1,  dv: 1,   e: [255, 120, 40] },
@@ -33,6 +33,14 @@
     t3:    { c: [CYAN, MAG, ICE],     k: .75, dv: 0,   e: [150, 220, 255] },
     t4:    { c: [CYAN, ICE, MAG],     k: .7,  dv: 0,   e: [130, 214, 255] },
     t5:    { c: [GOLD, CYAN, ICE],    k: .75, dv: 0,   e: [255, 205, 110] }
+  };
+  // Robot mode: the same sections in a cooler tone (cyan/ice glow and embers) with the BinaMora gold kept in the mix
+  var PALR = {
+    hero:  { c: [CYAN, ICE, GOLD],    k: .8,  dv: 0,   e: [150, 220, 255] },
+    film:  { c: [CYAN, ICE, DEEPB],   k: 1,   dv: 1,   e: [120, 210, 255] },
+    soon:  { c: [GOLD, CYAN, ICE],    k: .85, dv: .55, e: [255, 214, 120] },
+    proj:  { c: [ICE, CYAN, MAG],     k: .8,  dv: .3,  e: [160, 225, 255] },
+    cont:  { c: [GOLD, CYAN, DEEPB],  k: .7,  dv: .2,  e: [255, 210, 120] }
   };
   var SECTIONS = tutor
     ? [['.tutor-hero', 't1'], ['#how', 't2'], ['#features', 't3'], ['#faq', 't4'], ['#access', 't5']]
@@ -46,7 +54,7 @@
     stops = [];
     SECTIONS.forEach(function (s) {
       var el = doc.querySelector(s[0]);
-      if (el) stops.push({ y: docTop(el) + el.offsetHeight / 2, p: PAL[s[1]] });
+      if (el) stops.push({ y: docTop(el) + el.offsetHeight / 2, p: (kind === 'robot' && PALR[s[1]]) || PAL[s[1]] });
     });
     if (!stops.length) stops.push({ y: 0, p: PAL[tutor ? 't1' : 'film'] });
     stops.sort(function (a, b) { return a.y - b.y; });
@@ -143,8 +151,9 @@
     // the devil's halo: a warm glow that sits behind the silhouette and breathes with scroll speed
     if (devilBox.op > .01) {
       var hr = devilBox.h * .62, hx = devilBox.x + devilBox.w / 2, hy = devilBox.y + devilBox.h * .58, d = devilBox.op;
-      blob(g, hx, hy, hr, 1, 1 + vs * .35, EMBER, Math.min(.3, .2 * d * (1 + vs * .9)));
-      blob(g, hx, hy + devilBox.h * .2, hr * .5, 1, 1 + vs * .5, AMBER, Math.min(.2, .12 * d * (1 + vs * 1.1)));
+      var rb = kind === 'robot';
+      blob(g, hx, hy, hr, 1, 1 + vs * .35, rb ? CYAN : EMBER, Math.min(.3, .2 * d * (1 + vs * .9)));
+      blob(g, hx, hy + devilBox.h * .2, hr * .5, 1, 1 + vs * .5, rb ? ICE : AMBER, Math.min(.2, .12 * d * (1 + vs * 1.1)));
     }
     // floor glow: a low warm light along the bottom edge that heats up with speed
     var fh = H * .5, fy = H + fh * .15;
@@ -192,76 +201,79 @@
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  /* ---------- devil (desktop: lazy 3D; phones: faint poster only) ---------- */
-  var devilEl = null, devilCanvas = null, devilImg = null, devilApi = null, devilLost = false, devilOn = false, devilW = 0, devilH = 0;
+  /* ---------- character (devil or robot, per the header switch): poster first, lazy live 3D ---------- */
+  var kind = 'devil';                    // which character the background shows; set by apply()
+  var CH = {}, ch = null;                // per-kind {el, img, canvas, api, lost, w, h}; ch = the active one
   var devilAllowed = !tutor && !reduce && !saveData;
   var devil3D = devilAllowed && (coarse || window.innerWidth >= 900) && (navigator.hardwareConcurrency || 4) >= 4;
   var lastFlare = -9, devilAcc = 0;
   function layoutDevil() {
-    if (!devilEl) return;
+    if (!ch) return;
     var h, w;
     if (coarse) { w = Math.min(W * .62, H * .4); h = w / .8; } else { h = H; w = h * .8; if (w > W * .62) { w = W * .62; h = w / .8; } }
     devilBox.w = w; devilBox.h = h;
-    devilEl.style.width = w + 'px'; devilEl.style.height = h + 'px';
-    if (devilApi && (w !== devilW || h !== devilH)) { devilW = w; devilH = h; try { devilApi.resize(w, h); } catch (err) {} }
+    ch.el.style.width = w + 'px'; ch.el.style.height = h + 'px';
+    if (ch.api && (w !== ch.w || h !== ch.h)) { ch.w = w; ch.h = h; try { ch.api.resize(w, h); } catch (err) {} }
   }
   function initDevil() {
-    if (!devilAllowed || devilEl) return;
-    devilEl = doc.createElement('div'); devilEl.className = 'bm-bg__devil';
-    devilImg = new Image(); devilImg.alt = ''; devilImg.decoding = 'async';
-    devilImg.src = devilBase + 'devil-poster.webp';
-    devilEl.appendChild(devilImg);
-    layer.appendChild(devilEl);
+    if (!devilAllowed || !started) return;
+    for (var k in CH) CH[k].el.style.display = k === kind ? '' : 'none';
+    if (CH[kind]) { ch = CH[kind]; layoutDevil(); return; }
+    var c = ch = CH[kind] = { kind: kind, el: doc.createElement('div'), img: new Image(), canvas: null, api: null, lost: false, w: 0, h: 0 };
+    c.el.className = 'bm-bg__devil bm-bg__char--' + kind;
+    c.img.alt = ''; c.img.decoding = 'async';
+    c.img.src = devilBase + kind + '-poster.webp?v=2';
+    c.el.appendChild(c.img);
+    layer.appendChild(c.el);
     layoutDevil();
-    devilOn = true;
-    if (devil3D) load3D();
+    if (devil3D) load3D(c);
   }
   function webglOK() {
     try { var c = doc.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; }
   }
-  function load3D() {
+  function load3D(c) {
     if (!webglOK()) return;
-    devilCanvas = doc.createElement('canvas');
-    devilEl.appendChild(devilCanvas);
-    import(devilBase + 'devil.js?v=1').then(function (m) {
-      return m.createDevil(devilCanvas, { src: devilBase + 'devil-web.glb?v=1', mobile: coarse, dpr: coarse ? Math.min(1.25, window.devicePixelRatio || 1) : 1 });
+    c.canvas = doc.createElement('canvas');
+    c.el.appendChild(c.canvas);
+    import(devilBase + 'devil.js?v=2').then(function (m) {
+      return m.createCharacter(c.canvas, { kind: c.kind, src: devilBase + c.kind + '-web.glb?v=' + (c.kind === 'robot' ? 1 : 1), mobile: coarse, dpr: coarse ? Math.min(1.25, window.devicePixelRatio || 1) : 1 });
     }).then(function (api) {
-      devilApi = api; devilW = devilH = 0; layoutDevil();
+      c.api = api; c.w = c.h = 0; if (ch === c) layoutDevil();
       api.tick(0); api.frame(0);
-      requestAnimationFrame(function () { if (!devilLost) devilEl.classList.add('is-live'); });
-      devilCanvas.addEventListener('webglcontextlost', function (ev) { ev.preventDefault(); devilLost = true; devilEl.classList.remove('is-live'); });
-      devilCanvas.addEventListener('webglcontextrestored', function () { devilLost = false; devilEl.classList.add('is-live'); });
+      requestAnimationFrame(function () { if (!c.lost) c.el.classList.add('is-live'); });
+      c.canvas.addEventListener('webglcontextlost', function (ev) { ev.preventDefault(); c.lost = true; c.el.classList.remove('is-live'); });
+      c.canvas.addEventListener('webglcontextrestored', function () { c.lost = false; c.el.classList.add('is-live'); });
     }).catch(function (err) {
-      if (window.console) console.warn('Background devil: keeping poster', err && err.message);
-      if (devilCanvas && devilCanvas.parentNode) devilCanvas.parentNode.removeChild(devilCanvas);
-      devilApi = null;
+      if (window.console) console.warn('Background ' + c.kind + ': keeping poster', err && err.message);
+      if (c.canvas && c.canvas.parentNode) c.canvas.parentNode.removeChild(c.canvas);
+      c.api = null;
     });
   }
   function updateDevil(dt, prog) {
-    if (!devilEl) return;
+    if (!ch) { devilBox.op = 0; return; }
     var A = coarse ? .3 : .3;
     var xc = W * (.5 + A * Math.cos(prog * TAU * 1.5));                        // sweeps across the page as you scroll
     var yc = H * .52 + Math.sin(prog * TAU * 2) * H * (coarse ? .14 : .035) - (sv / 6000) * H * .05;
     devilBox.x = xc - devilBox.w / 2; devilBox.y = yc - devilBox.h / 2;
     var op = cur.dv * (coarse ? .22 + .1 * vs : .18 + .12 * vs);                           // faint at rest, a little stronger when moving
     devilBox.op = cur.dv;
-    devilEl.style.opacity = op < .01 ? '0' : op.toFixed(3);
-    devilEl.style.transform = 'translate3d(' + devilBox.x.toFixed(1) + 'px,' + devilBox.y.toFixed(1) + 'px,0)';
-    if (devilApi && !devilLost && op >= .01) {
+    ch.el.style.opacity = op < .01 ? '0' : op.toFixed(3);
+    ch.el.style.transform = 'translate3d(' + devilBox.x.toFixed(1) + 'px,' + devilBox.y.toFixed(1) + 'px,0)';
+    if (ch.api && !ch.lost && op >= .01) {
       var moving = vs > .03;
       devilAcc += dt;
       if (moving || devilAcc >= 1 / 24) {
         var step = devilAcc; devilAcc = 0;
         var yawDeg = (prog * 2 - 1) * 12 + (sv / 6000) * 8;                       // turns slowly with progress, leans into fast scrolls
-        devilApi.aim(yawDeg / 10);
-        if (vs > .35 && clock - lastFlare > .6) { devilApi.flare(); lastFlare = clock; }   // flames flare when you scroll quickly
-        try { devilApi.tick(step); devilApi.frame(clock); } catch (err) { devilLost = true; devilEl.classList.remove('is-live'); }
+        ch.api.aim(yawDeg / 10);
+        if (vs > .35 && clock - lastFlare > .6) { ch.api.flare(); lastFlare = clock; }   // flames flare / robot lights surge when you scroll quickly
+        try { ch.api.tick(step); ch.api.frame(clock); } catch (err) { ch.lost = true; ch.el.classList.remove('is-live'); }
       }
     }
   }
 
   /* ---------- main loop ---------- */
-  var raf = 0, last = 0, acc = 0, hidden = doc.hidden;
+  var raf = 0, last = 0, acc = 0, hidden = doc.hidden, started = false;
   var perf = { n: 0, sum: 0, max: 0, dtSum: 0, dtN: 0 };
   var slow = 0;
   var REF = 2200;                                      // px/s that counts as "fast" (scaled with viewport height below)
@@ -302,7 +314,7 @@
     var ms = performance.now() - t0;
     perf.n++; perf.sum += ms; if (ms > perf.max) perf.max = ms; perf.dtSum += dt * 1000; perf.dtN++;
     // safety valve: if the page is crawling (<~15fps for ~2s), thin the embers, then drop the 3D devil
-    if (dt > .066 && !calm) { if (++slow > 40) { slow = 0; if (emberLive > 8) emberLive = Math.floor(emberLive / 2); else if (devilApi) { devilLost = true; devilEl.classList.remove('is-live'); } } } else if (slow > 0) slow--;
+    if (dt > .066 && !calm) { if (++slow > 40) { slow = 0; if (emberLive > 8) emberLive = Math.floor(emberLive / 2); else if (ch && ch.api) { ch.lost = true; ch.el.classList.remove('is-live'); } } } else if (slow > 0) slow--;
     raf = requestAnimationFrame(frame);
   }
   function kick() { if (!raf && !hidden && !reduce && bgOn) { last = performance.now(); raf = requestAnimationFrame(frame); } }
@@ -339,11 +351,12 @@
   if (window.ResizeObserver) { var ro = new ResizeObserver(function () { measure(); }); ro.observe(body); }
   window.addEventListener('load', function () { measure(); });
 
-  // Background follows the header character switch: devil = this background, robot = (not added yet) none, off = none.
-  var bgOn = false, started = false;
+  // Background follows the header character switch: devil = devil background, robot = robot background (cooler tone), off = none.
+  var bgOn = false;
   function getMode() { try { return localStorage.getItem('bm-cursor') || 'none'; } catch (e) { return 'none'; } }
   function apply(m) {
-    bgOn = (m === 'devil');
+    bgOn = (m === 'devil' || m === 'robot');
+    if (bgOn && m !== kind) { kind = m; measure(); if (started && !reduce) { buildSprite(paletteAt(scrollS + H * .5).e); initDevil(); } }
     layer.style.display = bgOn ? '' : 'none';
     root.classList.toggle('bm-bg-on', bgOn);
     if (bgOn) { if (!started) start(); else if (reduce) drawStatic(); else { lastY = scrollY; scrollS = scrollY; kick(); } }
@@ -365,5 +378,5 @@
     if (doc.readyState === 'complete') go(); else window.addEventListener('load', go);
   }
   }
-  window.__bmBg = { stats: function () { var r = { frames: perf.n, avgDrawMs: perf.n ? perf.sum / perf.n : 0, maxDrawMs: perf.max, avgFrameMs: perf.dtN ? perf.dtSum / perf.dtN : 0, vs: vs, devil3D: !!devilApi, embers: emberLive }; perf = { n: 0, sum: 0, max: 0, dtSum: 0, dtN: 0 }; return r; } };
+  window.__bmBg = { stats: function () { var r = { frames: perf.n, avgDrawMs: perf.n ? perf.sum / perf.n : 0, maxDrawMs: perf.max, avgFrameMs: perf.dtN ? perf.dtSum / perf.dtN : 0, vs: vs, kind: kind, char3D: !!(ch && ch.api), devil3D: !!(CH.devil && CH.devil.api), robot3D: !!(CH.robot && CH.robot.api), embers: emberLive }; perf = { n: 0, sum: 0, max: 0, dtSum: 0, dtN: 0 }; return r; } };
 })();

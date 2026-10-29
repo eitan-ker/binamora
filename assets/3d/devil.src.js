@@ -1,7 +1,7 @@
-// BinaMora 3D devil: self-contained module (three.js + GLTFLoader + MeshoptDecoder), bundled by esbuild.
+// BinaMora 3D background characters (devil | robot): self-contained module (three.js + GLTFLoader + MeshoptDecoder), bundled by esbuild.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Color, ACESFilmicToneMapping, SRGBColorSpace,
-  PMREMGenerator, HemisphereLight, DirectionalLight, Box3, Vector3, RepeatWrapping, MathUtils
+  PMREMGenerator, HemisphereLight, DirectionalLight, Box3, Vector3, RepeatWrapping, MathUtils, AnimationMixer
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
@@ -10,8 +10,18 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 const SWAY = MathUtils.degToRad(25);   // gentle ±25° yaw (sides/back textures are stretched)
 const PERIOD = 14;                      // seconds per full sway cycle
 
-export async function createDevil(canvas, opts) {
+// per-model look: lights + idle motion
+const KINDS = {
+  devil: { hemi: [0x8899aa, 0x221111, 0.45], key: [0xffe6c8, 2.3], rim: [0xff5522, 2.4], rim2: [0xff6a2a, 1.4], env: 0.35, exposure: 1.0, glow: false },
+  robot: { hemi: [0x9fc4e0, 0x10161e, 0.55], key: [0xf2f6ff, 2.1], rim: [0x38c8ff, 2.6], rim2: [0xffc23a, 1.2], env: 0.55, exposure: 1.05, glow: true }
+};
+
+export function createDevil(canvas, opts) { return createCharacter(canvas, Object.assign({ kind: 'devil' }, opts)); }
+
+export async function createCharacter(canvas, opts) {
   opts = opts || {};
+  const kind = KINDS[opts.kind] ? opts.kind : 'devil';
+  const K = KINDS[kind];
   const mobile = !!opts.mobile;
   const maxDpr = mobile ? 1.25 : 1.5;
   const renderer = new WebGLRenderer({
@@ -20,19 +30,19 @@ export async function createDevil(canvas, opts) {
   });
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = K.exposure;
   renderer.outputColorSpace = SRGBColorSpace;
 
   const scene = new Scene();
   const pmrem = new PMREMGenerator(renderer);
   const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
   scene.environment = envRT.texture;
-  scene.environmentIntensity = 0.35;
+  scene.environmentIntensity = K.env;
   pmrem.dispose();
-  scene.add(new HemisphereLight(0x8899aa, 0x221111, 0.45));
-  const key = new DirectionalLight(0xffe6c8, 2.3); key.position.set(2, 3, 4); scene.add(key);
-  const rim = new DirectionalLight(0xff5522, 2.4); rim.position.set(-3, 2, -3); scene.add(rim);
-  const rim2 = new DirectionalLight(0xff6a2a, 1.4); rim2.position.set(3, 1.5, -3); scene.add(rim2);
+  scene.add(new HemisphereLight(K.hemi[0], K.hemi[1], K.hemi[2]));
+  const key = new DirectionalLight(K.key[0], K.key[1]); key.position.set(2, 3, 4); scene.add(key);
+  const rim = new DirectionalLight(K.rim[0], K.rim[1]); rim.position.set(-3, 2, -3); scene.add(rim);
+  const rim2 = new DirectionalLight(K.rim2[0], K.rim2[1]); rim2.position.set(3, 1.5, -3); scene.add(rim2);
 
   const camera = new PerspectiveCamera(30, 0.8, 0.1, 50);
 
@@ -62,6 +72,20 @@ export async function createDevil(canvas, opts) {
     o.renderOrder = 2;
     flames.push({ mesh: o, node: n, mat: m, base: m.map ? m.map.offset.x : 0, sy: n.scale.y, sx: n.scale.x, phase: flames.length * 1.7 });
   });
+
+  // Glowing parts (emissive maps, e.g. the robot's eyes/lights): pulse gently, surge on flare.
+  const glows = [];
+  model.traverse(function (o) {
+    if (!K.glow || !o.isMesh || !o.material || !o.material.emissiveMap) return;
+    o.material = o.material.clone();
+    glows.push({ mat: o.material, base: o.material.emissiveIntensity || 1 });
+  });
+  // Embedded animation clips, if any
+  let mixer = null;
+  if (gltf.animations && gltf.animations.length) {
+    mixer = new AnimationMixer(model);
+    gltf.animations.forEach(function (c) { mixer.clipAction(c).play(); });
+  }
 
   const box = new Box3().setFromObject(model);
   const size = box.getSize(new Vector3());
@@ -96,19 +120,21 @@ export async function createDevil(canvas, opts) {
       const flick = 1 + 0.05 * Math.sin(t * 7 + f.phase) + flare * 0.35;
       f.node.scale.set(f.sx * (1 + flare * 0.12), f.sy * flick, f.node.scale.z);
     }
-    rim.intensity = 2.4 + flare * 2.2 + 0.15 * Math.sin(t * 3.1);
+    rim.intensity = K.rim[1] + flare * 2.2 + 0.15 * Math.sin(t * 3.1);
+    for (let i = 0; i < glows.length; i++) glows[i].mat.emissiveIntensity = glows[i].base * (1.15 + 0.35 * Math.sin(t * 2.4 + i) + flare * 1.6);
     renderer.render(scene, camera);
   }
   function tick(dt) {
     flare = Math.max(0, flare - dt * 1.4);
     aim += (aimT - aim) * Math.min(1, dt * 4);
+    if (mixer) mixer.update(dt);
   }
 
   return {
     resize, frame, tick, renderer,
     flare: function () { flare = 1; },
     aim: function (v) { aimT = v * MathUtils.degToRad(10); },
-    flames: flames.length,
+    flames: flames.length, glows: glows.length, clips: mixer ? gltf.animations.length : 0, kind,
     still: function (yaw) { aim = aimT = 0; pivot.rotation.y = yaw || 0; flames.forEach(function (f) { if (f.mat.map) f.mat.map.offset.x = f.base; }); renderer.render(scene, camera); },
     info: { size: size.toArray(), center: cy }
   };
