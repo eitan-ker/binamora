@@ -195,7 +195,7 @@
   /* ---------- devil (desktop: lazy 3D; phones: faint poster only) ---------- */
   var devilEl = null, devilCanvas = null, devilImg = null, devilApi = null, devilLost = false, devilOn = false, devilW = 0, devilH = 0;
   var devilAllowed = !tutor && !reduce && !saveData;
-  var devil3D = devilAllowed && !coarse && window.innerWidth >= 900 && (navigator.hardwareConcurrency || 4) >= 4;
+  var devil3D = devilAllowed && (coarse || window.innerWidth >= 900) && (navigator.hardwareConcurrency || 4) >= 4;
   var lastFlare = -9, devilAcc = 0;
   function layoutDevil() {
     if (!devilEl) return;
@@ -224,7 +224,7 @@
     devilCanvas = doc.createElement('canvas');
     devilEl.appendChild(devilCanvas);
     import(devilBase + 'devil.js?v=1').then(function (m) {
-      return m.createDevil(devilCanvas, { src: devilBase + 'devil-web.glb?v=1', mobile: false, dpr: 1 });
+      return m.createDevil(devilCanvas, { src: devilBase + 'devil-web.glb?v=1', mobile: coarse, dpr: coarse ? Math.min(1.25, window.devicePixelRatio || 1) : 1 });
     }).then(function (api) {
       devilApi = api; devilW = devilH = 0; layoutDevil();
       api.tick(0); api.frame(0);
@@ -243,7 +243,7 @@
     var xc = W * (.5 + A * Math.cos(prog * TAU * 1.5));                        // sweeps across the page as you scroll
     var yc = H * .52 + Math.sin(prog * TAU * 2) * H * (coarse ? .14 : .035) - (sv / 6000) * H * .05;
     devilBox.x = xc - devilBox.w / 2; devilBox.y = yc - devilBox.h / 2;
-    var op = cur.dv * (coarse ? .17 + .1 * vs : .18 + .12 * vs);                           // faint at rest, a little stronger when moving
+    var op = cur.dv * (coarse ? .22 + .1 * vs : .18 + .12 * vs);                           // faint at rest, a little stronger when moving
     devilBox.op = cur.dv;
     devilEl.style.opacity = op < .01 ? '0' : op.toFixed(3);
     devilEl.style.transform = 'translate3d(' + devilBox.x.toFixed(1) + 'px,' + devilBox.y.toFixed(1) + 'px,0)';
