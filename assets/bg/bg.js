@@ -200,7 +200,7 @@
   function layoutDevil() {
     if (!devilEl) return;
     var h, w;
-    if (coarse) { h = H * .8; w = h * .8; } else { h = H; w = h * .8; if (w > W * .62) { w = W * .62; h = w / .8; } }
+    if (coarse) { w = Math.min(W * .62, H * .4); h = w / .8; } else { h = H; w = h * .8; if (w > W * .62) { w = W * .62; h = w / .8; } }
     devilBox.w = w; devilBox.h = h;
     devilEl.style.width = w + 'px'; devilEl.style.height = h + 'px';
     if (devilApi && (w !== devilW || h !== devilH)) { devilW = w; devilH = h; try { devilApi.resize(w, h); } catch (err) {} }
@@ -239,11 +239,11 @@
   }
   function updateDevil(dt, prog) {
     if (!devilEl) return;
-    var A = coarse ? .1 : .3;
+    var A = coarse ? .3 : .3;
     var xc = W * (.5 + A * Math.cos(prog * TAU * 1.5));                        // sweeps across the page as you scroll
-    var yc = H * .52 + Math.sin(prog * TAU * 2) * H * .035 - (sv / 6000) * H * .05;
+    var yc = H * .52 + Math.sin(prog * TAU * 2) * H * (coarse ? .14 : .035) - (sv / 6000) * H * .05;
     devilBox.x = xc - devilBox.w / 2; devilBox.y = yc - devilBox.h / 2;
-    var op = cur.dv * (coarse ? .15 : .18 + .12 * vs);                           // faint at rest, a little stronger when moving
+    var op = cur.dv * (coarse ? .17 + .1 * vs : .18 + .12 * vs);                           // faint at rest, a little stronger when moving
     devilBox.op = cur.dv;
     devilEl.style.opacity = op < .01 ? '0' : op.toFixed(3);
     devilEl.style.transform = 'translate3d(' + devilBox.x.toFixed(1) + 'px,' + devilBox.y.toFixed(1) + 'px,0)';
