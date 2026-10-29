@@ -314,6 +314,7 @@ var BM_T = BM_HE ? {
   var x = -100, y = -100;
   function set(m) {
     mode = m; localStorage.setItem(KEY, m);
+    window.dispatchEvent(new CustomEvent('bm-cursor-mode', { detail: m }));
     html.classList.toggle('cfx-on', m !== 'none');
     sprite.innerHTML = ART[m] ? '<img src="' + ART[m].idle + '" alt="">' : '';
     sprite.dataset.mode = m;
@@ -417,6 +418,7 @@ var BM_T = BM_HE ? {
   document.body.appendChild(rider);
   function set(m) {
     mode = m; localStorage.setItem(KEY, m);
+    window.dispatchEvent(new CustomEvent('bm-cursor-mode', { detail: m }));
     html.classList.toggle('cfx-on', m !== 'none');
     wrap.classList.toggle('cfx-m--on', m !== 'none');
     btn.innerHTML = ART[m] ? '<img src="' + ART[m].idle + '" alt="">' : OFF;

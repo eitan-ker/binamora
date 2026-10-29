@@ -267,7 +267,7 @@
   var REF = 2200;                                      // px/s that counts as "fast" (scaled with viewport height below)
   function frame(now) {
     raf = 0;
-    if (hidden) return;
+    if (hidden || !bgOn) return;
     var dt = Math.min(.1, (now - last) / 1000 || 0);
     var calm = vs < .012 && Math.abs(sv) < 30;
     var minDt = (coarse || calm) ? 1 / 30 - .002 : 0;   // 30fps on phones and whenever idle
@@ -305,7 +305,7 @@
     if (dt > .066 && !calm) { if (++slow > 40) { slow = 0; if (emberLive > 8) emberLive = Math.floor(emberLive / 2); else if (devilApi) { devilLost = true; devilEl.classList.remove('is-live'); } } } else if (slow > 0) slow--;
     raf = requestAnimationFrame(frame);
   }
-  function kick() { if (!raf && !hidden && !reduce) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  function kick() { if (!raf && !hidden && !reduce && bgOn) { last = performance.now(); raf = requestAnimationFrame(frame); } }
 
   /* ---------- reduced motion: static, subtle glow; tone still follows the section, nothing moves ---------- */
   var rmPending = false;
@@ -339,8 +339,21 @@
   if (window.ResizeObserver) { var ro = new ResizeObserver(function () { measure(); }); ro.observe(body); }
   window.addEventListener('load', function () { measure(); });
 
+  // Background follows the header character switch: devil = this background, robot = (not added yet) none, off = none.
+  var bgOn = false, started = false;
+  function getMode() { try { return localStorage.getItem('bm-cursor') || 'none'; } catch (e) { return 'none'; } }
+  function apply(m) {
+    bgOn = (m === 'devil');
+    layer.style.display = bgOn ? '' : 'none';
+    root.classList.toggle('bm-bg-on', bgOn);
+    if (bgOn) { if (!started) start(); else if (reduce) drawStatic(); else { lastY = scrollY; scrollS = scrollY; kick(); } }
+  }
+  window.addEventListener('bm-cursor-mode', function (e) { apply(e.detail); });
+  window.addEventListener('storage', function (e) { if (e.key === 'bm-cursor') apply(e.newValue || 'none'); });
   measure(); resize();
-  root.classList.add('bm-bg-on');
+  apply(getMode());
+  function start() {
+  started = true; measure(); resize(); lastY = scrollY; scrollS = scrollY;
   if (reduce) { drawStatic(); }
   else {
     paletteAt(scrollS + H * .5);
@@ -350,6 +363,7 @@
     var idle = window.requestIdleCallback || function (f) { return setTimeout(f, 600); };
     var go = function () { idle(initDevil, { timeout: 3500 }); };
     if (doc.readyState === 'complete') go(); else window.addEventListener('load', go);
+  }
   }
   window.__bmBg = { stats: function () { var r = { frames: perf.n, avgDrawMs: perf.n ? perf.sum / perf.n : 0, maxDrawMs: perf.max, avgFrameMs: perf.dtN ? perf.dtSum / perf.dtN : 0, vs: vs, devil3D: !!devilApi, embers: emberLive }; perf = { n: 0, sum: 0, max: 0, dtSum: 0, dtN: 0 }; return r; } };
 })();
