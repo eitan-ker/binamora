@@ -222,7 +222,7 @@
     var c = ch = CH[kind] = { kind: kind, el: doc.createElement('div'), img: new Image(), canvas: null, api: null, lost: false, w: 0, h: 0 };
     c.el.className = 'bm-bg__devil bm-bg__char--' + kind;
     c.img.alt = ''; c.img.decoding = 'async';
-    c.img.src = devilBase + kind + '-poster.webp?v=2';
+    c.img.src = devilBase + kind + '-poster.webp?v=' + (kind === 'robot' ? 3 : 2);
     c.el.appendChild(c.img);
     layer.appendChild(c.el);
     layoutDevil();
@@ -236,7 +236,7 @@
     c.canvas = doc.createElement('canvas');
     c.el.appendChild(c.canvas);
     import(devilBase + 'devil.js?v=2').then(function (m) {
-      return m.createCharacter(c.canvas, { kind: c.kind, src: devilBase + c.kind + '-web.glb?v=' + (c.kind === 'robot' ? 1 : 1), mobile: coarse, dpr: coarse ? Math.min(1.25, window.devicePixelRatio || 1) : 1 });
+      return m.createCharacter(c.canvas, { kind: c.kind, src: devilBase + c.kind + '-web.glb?v=' + (c.kind === 'robot' ? 2 : 1), mobile: coarse, dpr: coarse ? Math.min(1.25, window.devicePixelRatio || 1) : 1 });
     }).then(function (api) {
       c.api = api; c.w = c.h = 0; if (ch === c) layoutDevil();
       api.tick(0); api.frame(0);
