@@ -455,3 +455,6 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
 #tutor{scroll-margin-top:96px}
 .card--flash{animation:bm-card-flash 2.2s var(--ease) both}
 @keyframes bm-card-flash{0%,100%{box-shadow:0 0 0 0 rgba(237,187,0,0)}20%,60%{box-shadow:0 0 0 1px rgba(237,187,0,.65),0 0 34px rgba(237,187,0,.22)}}
+/* poster = end card (logo + tagline in the upper two thirds): play button sits low, below the text */
+.card__play{inset:auto auto clamp(10px,4.5%,22px) 50%;margin:0;width:clamp(46px,5.4vw,68px);height:clamp(46px,5.4vw,68px);transform:translateX(-50%)}
+.card__play:hover,.card__play:focus-visible{transform:translateX(-50%) scale(1.06)}
