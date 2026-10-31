@@ -528,26 +528,22 @@ var BM_DESKTOP = window.matchMedia('(hover:hover) and (pointer:fine)').matches |
     if (v.readyState >= 1) dur(); else v.addEventListener('loadedmetadata', dur);
     box.addEventListener('click', function () { if (box.classList.contains('is-playing')) return;
       box.classList.add('is-playing'); v.controls = true;
+      v.muted = false; v.volume = 1;   // never muted, full volume
       var p = v.play(); if (p && p.catch) p.catch(function () {});
     });
+    v.addEventListener('play', function () { v.muted = false; v.volume = 1; });   // any play (incl. native controls): sound on, max volume
     v.addEventListener('ended', function () { box.classList.remove('is-playing'); v.controls = false; v.load(); });
-    box.bmPlay = function () {
-      if (box.classList.contains('is-playing')) return;
-      box.classList.add('is-playing'); v.controls = true;
-      var p = v.play();
-      // without a user gesture the browser may refuse sound: start muted (controls let you unmute)
-      if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () { box.classList.remove('is-playing'); v.controls = false; }); });
-    };
   });
-  // Deep links: #tutor scrolls to the AI Tutor card (brief highlight); #tutor-video scrolls there and plays the video
+  // Deep links: #tutor scrolls to the AI Tutor card, #tutor-video centres its video; both add a brief highlight and never autoplay
   function deep() {
     var h = location.hash, card = document.getElementById('tutor'), box = document.getElementById('tutor-video');
     if (!card || (h !== '#tutor' && h !== '#tutor-video')) return;
     card.classList.add('is-visible');
-    card.scrollIntoView({ block: 'center' });
+    var target = (h === '#tutor-video' && box) || card;
+    var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
     card.classList.remove('card--flash'); void card.offsetWidth; card.classList.add('card--flash');
     setTimeout(function () { card.classList.remove('card--flash'); }, 2200);
-    if (h === '#tutor-video' && box && box.bmPlay) box.bmPlay();
   }
   window.addEventListener('hashchange', deep);
   if (document.readyState === 'complete') setTimeout(deep, 60); else window.addEventListener('load', function () { setTimeout(deep, 60); });
