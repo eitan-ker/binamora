@@ -502,13 +502,13 @@ var BM_DESKTOP = window.matchMedia('(hover:hover) and (pointer:fine)').matches |
     if (!v || !b) return;
     // clicks in the video area play the video; the rest of the card keeps linking to the tutor page
     box.addEventListener('click', function (e) { e.stopPropagation(); });
-    // Copy a deep link to this video (page URL + #tutor-video); never plays the video or follows the card link
+    // Copy a share link to this video (/v/tutor/ or /he/v/tutor/, which redirect to #tutor-video); never plays the video or follows the card link
     var cp = box.querySelector('.card__copy');
     if (cp) {
       var txt = cp.querySelector('.card__copy-txt'), label = txt ? txt.textContent : '', tmr = 0;
       cp.addEventListener('click', function (e) {
         e.preventDefault(); e.stopPropagation();
-        var url = location.origin + location.pathname + '#tutor-video';
+        var url = location.origin + (document.documentElement.lang === 'he' ? '/he' : '') + '/v/tutor/';   // share page with a rich preview; it forwards to #tutor-video
         function ok() {
           cp.classList.add('is-copied'); if (txt) txt.textContent = cp.getAttribute('data-done');
           clearTimeout(tmr); tmr = setTimeout(function () { cp.classList.remove('is-copied'); if (txt) txt.textContent = label; }, 2000);
