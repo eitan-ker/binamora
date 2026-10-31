@@ -353,8 +353,13 @@
 
   // Background follows the header character switch: devil = devil background, robot = robot background (cooler tone), off = none.
   var bgOn = false;
-  function getMode() { try { return localStorage.getItem('bm-cursor') || 'none'; } catch (e) { return 'none'; } }
+  // Desktop (hover + fine pointer) modes are disabled for now: background stays off there, whatever is stored.
+  // Flip to true together with DESKTOP_MODES_ENABLED in main.js. Touch devices are unaffected.
+  var DESKTOP_MODES_ENABLED = false;
+  var desktopOff = !DESKTOP_MODES_ENABLED && (mm('(hover:hover) and (pointer:fine)') || (!mm('(pointer:coarse)') && !navigator.maxTouchPoints && !('ontouchstart' in window)));
+  function getMode() { if (desktopOff) return 'none'; try { return localStorage.getItem('bm-cursor') || 'none'; } catch (e) { return 'none'; } }
   function apply(m) {
+    if (desktopOff) m = 'none';
     bgOn = (m === 'devil' || m === 'robot');
     if (bgOn && m !== kind) { kind = m; measure(); if (started && !reduce) { buildSprite(paletteAt(scrollS + H * .5).e); initDevil(); } }
     layer.style.display = bgOn ? '' : 'none';

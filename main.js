@@ -278,13 +278,20 @@ var BM_T = BM_HE ? {
 })();
 
 // ---- Cursor FX (desktop only): Robot / Devil / None switch in the header ----
+// Desktop switch is currently disabled: no switch, regular cursor, no background (stored choice ignored).
+// Set DESKTOP_MODES_ENABLED = true here AND in assets/bg/bg.js to bring it back. Touch devices are unaffected.
+var DESKTOP_MODES_ENABLED = false;
+// "Desktop" = a fine hovering pointer, or no touch support at all
+var BM_DESKTOP = window.matchMedia('(hover:hover) and (pointer:fine)').matches ||
+  (!window.matchMedia('(pointer:coarse)').matches && !navigator.maxTouchPoints && !('ontouchstart' in window));
 (function () {
   var mq = window.matchMedia('(hover:hover) and (pointer:fine)');
   if (!mq.matches || !document.querySelector('.nav')) return;
+  if (!DESKTOP_MODES_ENABLED) return;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var KEY = 'bm-cursor', html = document.documentElement;
   var base = (document.currentScript && document.currentScript.src) ||
-    (document.querySelector('script[src$="main.js"]') || {}).src || '';
+    (document.querySelector('script[src*="main.js"]') || {}).src || '';
   base = base.replace(/main\.js.*$/, '');
   var A = base + 'assets/cursor/';
   var ART = { robot: { idle: A + 'robot-idle.webp', aim: A + 'robot-aim.webp', mx: .97, my: .30 },
@@ -380,11 +387,12 @@ var BM_T = BM_HE ? {
 // ---- Cursor FX on touch devices: character rides the right edge with the scroll; taps fire at the target ----
 (function () {
   if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) return; // desktop handled above
+  if (BM_DESKTOP && !DESKTOP_MODES_ENABLED) return;                              // desktop modes disabled
   var nav = document.querySelector('.nav');
   if (!nav) return;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var KEY = 'bm-cursor', html = document.documentElement;
-  var base = ((document.querySelector('script[src$="main.js"]') || {}).src || '').replace(/main\.js.*$/, '');
+  var base = ((document.querySelector('script[src*="main.js"]') || {}).src || '').replace(/main\.js.*$/, '');
   var A = base + 'assets/cursor/';
   var ART = { robot: { idle: A + 'robot-idle.webp', aim: A + 'robot-aim.webp', mx: .97, my: .30 },
               devil: { idle: A + 'devil-idle.webp', aim: A + 'devil-aim.webp', mx: .94, my: .17 } };
@@ -485,4 +493,41 @@ var BM_T = BM_HE ? {
     shoot(a.closest('.card') || a, e.clientX, e.clientY);
     setTimeout(function () { replaying = true; a.click(); replaying = false; }, 430);
   }, true);
+})();
+
+// ---- AI Tutor card promo video: click-to-play, native controls once started ----
+(function () {
+  [].forEach.call(document.querySelectorAll('.card__video'), function (box) {
+    var v = box.querySelector('video'), b = box.querySelector('.card__play');
+    if (!v || !b) return;
+    // clicks in the video area play the video; the rest of the card keeps linking to the tutor page
+    box.addEventListener('click', function (e) { e.stopPropagation(); });
+    var badge = document.createElement('span'); badge.className = 'card__dur'; badge.setAttribute('aria-hidden', 'true'); box.appendChild(badge);
+    function dur() { var d = Math.round(v.duration); if (d > 0 && isFinite(d)) badge.textContent = Math.floor(d / 60) + ':' + ('0' + d % 60).slice(-2); }
+    if (v.readyState >= 1) dur(); else v.addEventListener('loadedmetadata', dur);
+    box.addEventListener('click', function () { if (box.classList.contains('is-playing')) return;
+      box.classList.add('is-playing'); v.controls = true;
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    });
+    v.addEventListener('ended', function () { box.classList.remove('is-playing'); v.controls = false; v.load(); });
+    box.bmPlay = function () {
+      if (box.classList.contains('is-playing')) return;
+      box.classList.add('is-playing'); v.controls = true;
+      var p = v.play();
+      // without a user gesture the browser may refuse sound: start muted (controls let you unmute)
+      if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () { box.classList.remove('is-playing'); v.controls = false; }); });
+    };
+  });
+  // Deep links: #tutor scrolls to the AI Tutor card (brief highlight); #tutor-video scrolls there and plays the video
+  function deep() {
+    var h = location.hash, card = document.getElementById('tutor'), box = document.getElementById('tutor-video');
+    if (!card || (h !== '#tutor' && h !== '#tutor-video')) return;
+    card.classList.add('is-visible');
+    card.scrollIntoView({ block: 'center' });
+    card.classList.remove('card--flash'); void card.offsetWidth; card.classList.add('card--flash');
+    setTimeout(function () { card.classList.remove('card--flash'); }, 2200);
+    if (h === '#tutor-video' && box && box.bmPlay) box.bmPlay();
+  }
+  window.addEventListener('hashchange', deep);
+  if (document.readyState === 'complete') setTimeout(deep, 60); else window.addEventListener('load', function () { setTimeout(deep, 60); });
 })();
