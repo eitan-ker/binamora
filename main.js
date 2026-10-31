@@ -502,6 +502,27 @@ var BM_DESKTOP = window.matchMedia('(hover:hover) and (pointer:fine)').matches |
     if (!v || !b) return;
     // clicks in the video area play the video; the rest of the card keeps linking to the tutor page
     box.addEventListener('click', function (e) { e.stopPropagation(); });
+    // Copy a deep link to this video (page URL + #tutor-video); never plays the video or follows the card link
+    var cp = box.querySelector('.card__copy');
+    if (cp) {
+      var txt = cp.querySelector('.card__copy-txt'), label = txt ? txt.textContent : '', tmr = 0;
+      cp.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var url = location.origin + location.pathname + '#tutor-video';
+        function ok() {
+          cp.classList.add('is-copied'); if (txt) txt.textContent = cp.getAttribute('data-done');
+          clearTimeout(tmr); tmr = setTimeout(function () { cp.classList.remove('is-copied'); if (txt) txt.textContent = label; }, 2000);
+        }
+        function fallback() {
+          var ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+          document.body.appendChild(ta); ta.select();
+          try { if (document.execCommand('copy')) ok(); } catch (err) {}
+          ta.remove(); cp.focus();
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, fallback); else fallback();
+      });
+    }
     var badge = document.createElement('span'); badge.className = 'card__dur'; badge.setAttribute('aria-hidden', 'true'); box.appendChild(badge);
     function dur() { var d = Math.round(v.duration); if (d > 0 && isFinite(d)) badge.textContent = Math.floor(d / 60) + ':' + ('0' + d % 60).slice(-2); }
     if (v.readyState >= 1) dur(); else v.addEventListener('loadedmetadata', dur);

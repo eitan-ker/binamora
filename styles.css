@@ -458,3 +458,14 @@ html[dir="rtl"] .contact-form__hp{left:auto;right:-10000px}
 /* poster = end card (logo + tagline in the upper two thirds): play button sits low, below the text */
 .card__play{inset:auto auto clamp(10px,4.5%,22px) 50%;margin:0;width:clamp(46px,5.4vw,68px);height:clamp(46px,5.4vw,68px);transform:translateX(-50%)}
 .card__play:hover,.card__play:focus-visible{transform:translateX(-50%) scale(1.06)}
+/* AI Tutor video: copy-link button (top corner, clear of the end-card text, play button and player controls) */
+.card__copy{position:absolute;top:.6rem;inset-inline-end:.6rem;z-index:4;display:inline-flex;align-items:center;gap:.4rem;min-height:36px;padding:.4rem .7rem;border-radius:999px;cursor:pointer;background:rgba(11,11,13,.68);border:1px solid rgba(237,187,0,.45);color:#f3f2f2;font:500 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:background-color var(--dur-2) var(--ease),border-color var(--dur-2) var(--ease),color var(--dur-2) var(--ease),opacity var(--dur-2) var(--ease)}
+.card__copy svg{width:14px;height:14px;fill:none;stroke:var(--c-yellow,#edbb00);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.card__copy:hover,.card__copy:focus-visible{background:rgba(237,187,0,.16);border-color:var(--c-yellow,#edbb00)}
+.card__copy:focus-visible{outline:2px solid var(--c-yellow,#edbb00);outline-offset:2px}
+.card__copy.is-copied{border-color:rgba(98,197,238,.7);color:var(--accent,#62c5ee)}
+.card__copy.is-copied svg{stroke:var(--accent,#62c5ee)}
+html[lang="he"] .card__copy{letter-spacing:.02em;font-size:.74rem}
+.card__video.is-playing .card__copy{opacity:.55}
+.card__video.is-playing:hover .card__copy,.card__video.is-playing .card__copy:focus-visible{opacity:1}
+@media (pointer:coarse){.card__copy{min-height:44px;padding:.5rem .85rem}}
