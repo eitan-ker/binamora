@@ -524,3 +524,19 @@ html.tvp-open{overflow:hidden}
 .tvp:not(.is-started) .tvp__bar{opacity:0;pointer-events:none}
 .tvp button:focus-visible,.tvp input:focus-visible{outline:2px solid var(--c-yellow);outline-offset:3px}
 @media (max-width:700px),(pointer:coarse){.tvp:not(.is-started) .tvp__big{top:auto;bottom:6px;width:46px;height:46px;padding:13px;transform:translateX(-50%);box-shadow:0 0 0 5px rgba(237,187,0,.1),0 8px 24px rgba(0,0,0,.5)}.tvp:not(.is-started) .tvp__big:hover,.tvp:not(.is-started) .tvp__big:focus-visible{transform:translateX(-50%) scale(1.06)}.tvp__close{width:40px;height:40px;padding:11px;top:8px;inset-inline-end:8px}}
+/* overlay player on phones and short/landscape screens: smaller panel, centred with generous top/bottom margins, safe-area aware */
+@media (max-width:600px),(max-height:500px){
+  .tvp{--tvp-m:13vh;padding:calc(var(--tvp-m) + env(safe-area-inset-top,0px)) calc(7vw + env(safe-area-inset-right,0px)) calc(var(--tvp-m) + env(safe-area-inset-bottom,0px)) calc(7vw + env(safe-area-inset-left,0px));box-sizing:border-box}
+  @supports (height:100dvh){.tvp{--tvp-m:13dvh}}
+  .tvp__panel{width:min(86vw,calc((100vh - 2 * var(--tvp-m) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) * 16 / 9));max-height:none;border-radius:14px}
+  @supports (height:100dvh){.tvp__panel{width:min(86vw,calc((100dvh - 2 * var(--tvp-m) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) * 16 / 9))}}
+  .tvp__bar{padding:1.8rem .55rem .5rem}
+  .tvp__close{top:8px;inset-inline-end:8px}
+}
+/* play buttons: dead centre on the card panel and on the overlay before first play; brighter gold on a solid dark disc */
+.card__play{inset:0;margin:auto;transform:none;width:clamp(58px,6.2vw,76px);height:clamp(58px,6.2vw,76px);background:rgba(10,10,12,.88);border:2px solid #ffcf2e;box-shadow:0 0 0 6px rgba(255,207,46,.16),0 10px 30px rgba(0,0,0,.6)}
+.card__play svg{fill:#ffcf2e}
+.card__play:hover,.card__play:focus-visible{transform:scale(1.07);background:rgba(10,10,12,.94);box-shadow:0 0 0 9px rgba(255,207,46,.24),0 10px 30px rgba(0,0,0,.6)}
+.tvp__big,.tvp:not(.is-started) .tvp__big{top:50%;bottom:auto;transform:translate(-50%,-50%);background:rgba(10,10,12,.88);border:2px solid #ffcf2e;color:#ffcf2e;box-shadow:0 0 0 8px rgba(255,207,46,.16),0 14px 40px rgba(0,0,0,.6)}
+.tvp__big:hover,.tvp__big:focus-visible,.tvp:not(.is-started) .tvp__big:hover,.tvp:not(.is-started) .tvp__big:focus-visible{transform:translate(-50%,-50%) scale(1.06);background:rgba(10,10,12,.94);box-shadow:0 0 0 12px rgba(255,207,46,.24),0 14px 40px rgba(0,0,0,.6)}
+@media (max-width:600px),(max-height:500px){.tvp__big,.tvp:not(.is-started) .tvp__big{width:58px;height:58px;padding:16px}}
