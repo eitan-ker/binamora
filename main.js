@@ -534,17 +534,140 @@ var BM_DESKTOP = window.matchMedia('(hover:hover) and (pointer:fine)').matches |
     v.addEventListener('play', function () { v.muted = false; v.volume = 1; });   // any play (incl. native controls): sound on, max volume
     v.addEventListener('ended', function () { box.classList.remove('is-playing'); v.controls = false; v.load(); });
   });
-  // Deep links: #tutor scrolls to the AI Tutor card, #tutor-video centres its video; both add a brief highlight and never autoplay
+  // Deep links: #tutor scrolls to the AI Tutor card (brief highlight); #tutor-video also opens the branded overlay player.
+  function flash(card) { card.classList.remove('card--flash'); void card.offsetWidth; card.classList.add('card--flash'); setTimeout(function () { card.classList.remove('card--flash'); }, 2200); }
   function deep() {
     var h = location.hash, card = document.getElementById('tutor'), box = document.getElementById('tutor-video');
     if (!card || (h !== '#tutor' && h !== '#tutor-video')) return;
     card.classList.add('is-visible');
     var target = (h === '#tutor-video' && box) || card;
     var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
-    card.classList.remove('card--flash'); void card.offsetWidth; card.classList.add('card--flash');
-    setTimeout(function () { card.classList.remove('card--flash'); }, 2200);
+    target.scrollIntoView({ block: 'center', behavior: h === '#tutor-video' ? 'auto' : (smooth ? 'smooth' : 'auto') });
+    flash(card);
+    if (h === '#tutor-video' && box) openPlayer(box);
   }
+
+  // ---- Overlay player (custom, branded). Never autoplays; every play is unmuted at volume 1. ----
+  var ov = null;
+  function fmt(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); }
+  function openPlayer(box) {
+    if (ov) return;
+    var src = box.querySelector('video'), he = document.documentElement.lang === 'he';
+    var L = he ? { dlg: 'נגן הסרטון', play: 'הפעלה', pause: 'השהיה', close: 'סגירה', mute: 'השתקה', unmute: 'ביטול השתקה', fs: 'מסך מלא', seek: 'מיקום בסרטון', vol: 'עוצמת קול' }
+               : { dlg: 'Video player', play: 'Play', pause: 'Pause', close: 'Close', mute: 'Mute', unmute: 'Unmute', fs: 'Full screen', seek: 'Seek', vol: 'Volume' };
+    var I = {
+      play: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+      pause: '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
+      vol: '<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>',
+      mute: '<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></svg>',
+      fs: '<svg viewBox="0 0 24 24"><path class="w" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+      x: '<svg viewBox="0 0 24 24"><path class="w" d="M6 6l12 12M18 6L6 18"/></svg>'
+    };
+    ov = document.createElement('div');
+    ov.className = 'tvp'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', L.dlg);
+    ov.dir = he ? 'rtl' : 'ltr';
+    ov.innerHTML = '<div class="tvp__panel">' +
+      '<video class="tvp__vid" playsinline preload="auto"></video>' +
+      '<button class="tvp__big" type="button" aria-label="' + L.play + '">' + I.play + '</button>' +
+      '<button class="tvp__close" type="button" aria-label="' + L.close + '">' + I.x + '</button>' +
+      '<div class="tvp__bar">' +
+        '<button class="tvp__btn tvp__pp" type="button" aria-label="' + L.play + '">' + I.play + '</button>' +
+        '<div class="tvp__seek" role="slider" tabindex="0" aria-label="' + L.seek + '" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><div class="tvp__track"><div class="tvp__buf"></div><div class="tvp__fill"></div><div class="tvp__knob"></div></div></div>' +
+        '<span class="tvp__time" dir="ltr"><span class="tvp__cur">0:00</span> / <span class="tvp__dur">0:00</span></span>' +
+        '<div class="tvp__volw"><button class="tvp__btn tvp__mute" type="button" aria-label="' + L.mute + '">' + I.vol + '</button>' +
+        '<input class="tvp__vol" type="range" min="0" max="1" step="0.05" value="1" aria-label="' + L.vol + '"></div>' +
+        '<button class="tvp__btn tvp__fs" type="button" aria-label="' + L.fs + '">' + I.fs + '</button>' +
+      '</div></div>';
+    document.body.appendChild(ov);
+    document.documentElement.classList.add('tvp-open');
+    var q = function (c) { return ov.querySelector(c); };
+    var v = q('.tvp__vid'), panel = q('.tvp__panel'), big = q('.tvp__big'), pp = q('.tvp__pp'), seek = q('.tvp__seek'), fill = q('.tvp__fill'), knob = q('.tvp__knob'), buf = q('.tvp__buf'),
+        cur = q('.tvp__cur'), dur = q('.tvp__dur'), mute = q('.tvp__mute'), vol = q('.tvp__vol'), fs = q('.tvp__fs');
+    v.poster = src.getAttribute('poster'); v.src = src.currentSrc || src.getAttribute('src');
+    v.muted = false; v.volume = 1;
+    var prevFocus = document.activeElement, hideT = 0;
+    function toggle() { if (v.paused || v.ended) v.play().catch(function () {}); else v.pause(); }
+    function sync() {
+      var playing = !v.paused && !v.ended;
+      ov.classList.toggle('is-playing', playing);
+      pp.innerHTML = playing ? I.pause : I.play; pp.setAttribute('aria-label', playing ? L.pause : L.play);
+      big.setAttribute('aria-label', playing ? L.pause : L.play);
+      if (!playing) show(); else poke();
+    }
+    function prog() {
+      var d = v.duration || 0, f = d ? v.currentTime / d : 0;
+      fill.style.width = (f * 100) + '%'; knob.style.insetInlineStart = (f * 100) + '%';
+      cur.textContent = fmt(v.currentTime); seek.setAttribute('aria-valuenow', Math.floor(v.currentTime)); seek.setAttribute('aria-valuetext', fmt(v.currentTime) + ' / ' + fmt(d));
+      if (v.buffered.length && d) buf.style.width = (v.buffered.end(v.buffered.length - 1) / d * 100) + '%';
+    }
+    function meta() { dur.textContent = fmt(v.duration); seek.setAttribute('aria-valuemax', Math.floor(v.duration)); prog(); }
+    function volUI() {
+      var m = v.muted || v.volume === 0;
+      mute.innerHTML = m ? I.mute : I.vol; mute.setAttribute('aria-label', m ? L.unmute : L.mute);
+      vol.value = v.muted ? 0 : v.volume; vol.style.setProperty('--v', (vol.value * 100) + '%');
+    }
+    function show() { ov.classList.remove('is-idle'); clearTimeout(hideT); }
+    function poke() { show(); if (!v.paused) hideT = setTimeout(function () { ov.classList.add('is-idle'); }, 2600); }
+    v.addEventListener('play', function () { v.muted = false; v.volume = 1; ov.classList.add('is-started'); volUI(); sync(); });
+    v.addEventListener('pause', sync); v.addEventListener('ended', sync);
+    v.addEventListener('timeupdate', prog); v.addEventListener('progress', prog);
+    v.addEventListener('loadedmetadata', meta); if (v.readyState >= 1) meta();
+    v.addEventListener('volumechange', volUI);
+    v.addEventListener('click', toggle); big.addEventListener('click', toggle); pp.addEventListener('click', toggle);
+    mute.addEventListener('click', function () { if (v.muted || v.volume === 0) { v.muted = false; if (!v.volume) v.volume = 1; } else v.muted = true; });
+    vol.addEventListener('input', function () { v.volume = +vol.value; v.muted = +vol.value === 0; });
+    // scrubbing (pointer: mouse + touch); RTL timeline runs right to left
+    function seekTo(e) {
+      var r = seek.getBoundingClientRect(), f = (e.clientX - r.left) / r.width;
+      if (ov.dir === 'rtl') f = 1 - f;
+      f = Math.min(1, Math.max(0, f)); if (v.duration) { v.currentTime = f * v.duration; prog(); }
+    }
+    var drag = false;
+    seek.addEventListener('pointerdown', function (e) { drag = true; seek.setPointerCapture(e.pointerId); seekTo(e); ov.classList.add('is-scrub'); });
+    seek.addEventListener('pointermove', function (e) { if (drag) seekTo(e); });
+    seek.addEventListener('pointerup', function () { drag = false; ov.classList.remove('is-scrub'); });
+    seek.addEventListener('pointercancel', function () { drag = false; ov.classList.remove('is-scrub'); });
+    fs.addEventListener('click', function () {
+      var d = document;
+      if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+      else if (panel.requestFullscreen) panel.requestFullscreen().catch(function () {});
+      else if (panel.webkitRequestFullscreen) panel.webkitRequestFullscreen();
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();   // iPhone
+    });
+    function close() {
+      if (!ov) return;
+      var d = document; if (d.fullscreenElement && d.exitFullscreen) d.exitFullscreen().catch(function () {});
+      v.pause(); v.removeAttribute('src'); v.load();
+      document.removeEventListener('keydown', key, true);
+      ov.remove(); ov = null;
+      document.documentElement.classList.remove('tvp-open');
+      if (location.hash === '#tutor-video' && history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+      box.scrollIntoView({ block: 'center' });
+      var b = box.querySelector('.card__play'); (b || prevFocus || document.body).focus && (b || prevFocus).focus({ preventScroll: true });
+    }
+    q('.tvp__close').addEventListener('click', close);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    ov.addEventListener('pointermove', poke); ov.addEventListener('touchstart', poke, { passive: true });
+    function key(e) {
+      if (!ov) return;
+      var k = e.key, tag = (e.target.tagName || '').toLowerCase();
+      if (k === 'Escape') { e.preventDefault(); if (!document.fullscreenElement) close(); return; }
+      if (tag === 'input' && (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'ArrowUp' || k === 'ArrowDown')) return;   // volume slider handles its own arrows
+      if (k === ' ' || k === 'Spacebar' || k === 'k') { if (tag === 'button' && k !== 'k' && e.target !== big && e.target !== pp) return; e.preventDefault(); toggle(); poke(); }
+      else if (k === 'ArrowRight' || k === 'ArrowLeft') { e.preventDefault(); var dir = (k === 'ArrowRight' ? 1 : -1) * (ov.dir === 'rtl' ? -1 : 1); v.currentTime = Math.min(v.duration || 0, Math.max(0, v.currentTime + dir * 5)); poke(); }
+      else if (k === 'f') { fs.click(); }
+      else if (k === 'm') { mute.click(); }
+      else if (k === 'Tab') {   // keep focus inside the dialog
+        var f = [].filter.call(ov.querySelectorAll('button,[tabindex="0"],input'), function (x) { return x.offsetParent !== null; });
+        if (!f.length) return; var i = f.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+      }
+    }
+    document.addEventListener('keydown', key, true);
+    volUI(); sync();
+    requestAnimationFrame(function () { ov && ov.classList.add('is-in'); big.focus({ preventScroll: true }); });
+  }
+  window.__bmOpenTutorPlayer = function () { var b = document.getElementById('tutor-video'); if (b) openPlayer(b); };
   window.addEventListener('hashchange', deep);
   if (document.readyState === 'complete') setTimeout(deep, 60); else window.addEventListener('load', function () { setTimeout(deep, 60); });
 })();
